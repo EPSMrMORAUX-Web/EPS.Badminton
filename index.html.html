@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>🏸 BadmintonPro EPS v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f1e;--bg2:#111827;--s1:#1a2237;--s2:#222d42;--b:#2d3a54;--t:#e2e8f0;--mu:#718096;--ac:#f6c90e;--ac2:#e5b800;--gr:#48bb78;--re:#fc8181;--bl:#63b3ed;--pu:#b794f4}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t);font-size:14px;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--b);border-radius:3px}
+.hd{background:var(--bg2);border-bottom:3px solid var(--ac);padding:0 10px;display:flex;align-items:center;gap:6px;position:sticky;top:0;z-index:100;min-height:48px}
+.logo{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:var(--ac);white-space:nowrap}
+.logo span{color:var(--t)}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;flex:1;gap:0}
+.tabs::-webkit-scrollbar{display:none}
+.tb{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--mu);background:none;border:none;border-bottom:3px solid transparent;padding:12px 9px;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s}
+.tb:hover{color:var(--t)}
+.tb.active{color:var(--ac);border-bottom-color:var(--ac)}
+.panel{display:none;padding:14px;animation:fi .2s ease}
+.panel.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:12px;margin-bottom:12px}
+.ct{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.8px;color:var(--ac);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;transition:all .15s;white-space:nowrap;touch-action:manipulation}
+.bp{background:var(--ac);color:#000}.bp:active{background:var(--ac2)}
+.bd{background:rgba(252,129,129,.15);color:var(--re);border:1px solid rgba(252,129,129,.3)}.bd:active{background:rgba(252,129,129,.3)}
+.bg{background:var(--s2);color:var(--t);border:1px solid var(--b)}.bg:active{background:var(--b)}
+.bgr{background:rgba(72,187,120,.12);color:var(--gr);border:1px solid rgba(72,187,120,.3)}
+.bbl{background:rgba(99,179,237,.12);color:var(--bl);border:1px solid rgba(99,179,237,.3)}
+.bsm{padding:4px 9px;font-size:12px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--s2);border:1px solid var(--b);border-radius:20px;padding:4px 10px;font-size:12px;cursor:grab;user-select:none;touch-action:none;transition:all .15s;white-space:nowrap}
+.chip:active,.chip:hover{border-color:var(--ac)}
+.chip.dragging{opacity:.4}
+input,select,textarea{background:var(--s2);border:1px solid var(--b);border-radius:6px;color:var(--t);padding:7px 10px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--ac)}
+select option{background:var(--s2)}
+table{width:100%;border-collapse:collapse}
+th{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;background:var(--s2);padding:8px 9px;text-align:left;border-bottom:2px solid var(--ac);color:var(--ac)}
+td{padding:7px 9px;border-bottom:1px solid var(--b);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+.dz{min-height:60px;border:2px dashed var(--b);border-radius:8px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;transition:all .2s}
+.dz.over{border-color:var(--ac);background:rgba(246,201,14,.05)}
+.dz-empty{color:var(--mu);font-size:11px;font-style:italic;width:100%;text-align:center;padding:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:600px){.g4{grid-template-columns:1fr 1fr}}
+.fdrop{border:2px dashed var(--b);border-radius:10px;padding:30px;text-align:center;cursor:pointer;transition:all .2s}
+.fdrop:hover,.fdrop.over{border-color:var(--ac);background:rgba(246,201,14,.04)}
+.es{text-align:center;padding:30px;color:var(--mu)}
+.es-icon{font-size:40px;margin-bottom:8px}
+.lbadge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
+.l0{background:var(--s2);color:var(--mu)}.l1{background:#1a202c;color:#a0aec0;border:1px solid #4a5568}
+.l2{background:#1a365d;color:var(--bl);border:1px solid #2b6cb0}.l3{background:#1c4532;color:var(--gr);border:1px solid #276749}
+/* SUBTABS */
+.stabs{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:10px;border-bottom:2px solid var(--b);padding-bottom:4px}
+.stb{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;padding:6px 12px;border-radius:6px 6px 0 0;border:1px solid transparent;cursor:pointer;color:var(--mu);background:none;white-space:nowrap;transition:all .15s}
+.stb.active{background:var(--s1);color:var(--ac);border-color:var(--b) var(--b) var(--s1)}
+.stb:hover{color:var(--t)}
+.stb-add{color:var(--gr);font-size:18px;padding:3px 8px;background:none;border:none;cursor:pointer;font-weight:700}
+/* MONTANTE */
+.mtrack{overflow-x:auto;padding-bottom:6px}
+.mgrid{display:grid;grid-template-columns:repeat(9,minmax(120px,1fr));gap:6px;min-width:1100px}
+.mcell{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:8px;min-height:100px;transition:all .2s}
+.mcell.over{border-color:var(--ac);background:rgba(246,201,14,.06)}
+.mcell-hdr{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:var(--ac);text-align:center;margin-bottom:6px;border-bottom:1px solid var(--b);padding-bottom:4px}
+/* MATCH SHEET */
+.set-block{background:var(--s1);border:1px solid var(--b);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.set-hdr{background:var(--s2);padding:7px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--mu);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.set-hdr.won{background:rgba(72,187,120,.1);color:var(--gr)}
+.player-row{display:grid;grid-template-columns:120px 1fr 52px;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--b)}
+.player-row:last-child{border-bottom:none}
+.tally-area{display:flex;flex-wrap:wrap;gap:3px;min-height:28px;padding:4px;border-radius:6px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .15s;touch-action:manipulation}
+.tally-area:active{background:rgba(255,255,255,.04)}
+.tm{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;touch-action:manipulation}
+.tn{background:var(--s2);border:1px solid var(--gr);color:var(--gr)}
+.td2{background:rgba(252,129,129,.12);border:2px solid var(--re);color:var(--re)}
+.score-num{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:24px;text-align:center}
+.score-num.lead{color:var(--ac)}.score-num.win{color:var(--gr)}
+/* POULES */
+.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.pcard{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:10px}
+.pcard-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:4px}
+/* OBS */
+.obs-val{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;min-width:26px;text-align:center;color:var(--ac)}
+.obs-cnt{display:flex;align-items:center;gap:5px}
+.ob{width:26px;height:26px;border-radius:5px;border:none;cursor:pointer;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.obp{background:rgba(72,187,120,.2);color:var(--gr)}.obm{background:rgba(252,129,129,.2);color:var(--re)}
+/* ATP */
+.atp-rank{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;text-align:center;min-width:28px}
+.atp-pts{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;color:var(--ac)}
+.pts-badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif}
+.pts-win{background:rgba(72,187,120,.15);color:var(--gr);border:1px solid rgba(72,187,120,.3)}
+.pts-lose{background:rgba(113,128,150,.12);color:var(--mu);border:1px solid var(--b)}
+.pts-arb{background:rgba(99,179,237,.12);color:var(--bl);border:1px solid rgba(99,179,237,.3)}
+.match-hist-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;background:var(--s2);margin-bottom:4px;font-size:13px;flex-wrap:wrap}
+.session-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:var(--s2);color:var(--mu);font-family:'Barlow Condensed',sans-serif;border:1px solid var(--b)}
+/* BARÈME */
+.deg-sel{display:flex;gap:4px;flex-wrap:wrap}
+.dg-btn{flex:1;min-width:60px;padding:8px 4px;border-radius:6px;border:2px solid var(--b);background:var(--s2);color:var(--mu);cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-align:center;transition:all .15s;touch-action:manipulation}
+.dg-btn.sel{border-color:var(--ac);color:var(--ac);background:rgba(246,201,14,.08)}
+.dg-btn:hover{border-color:var(--mu);color:var(--t)}
+.gain-sel{display:flex;gap:4px;flex-wrap:wrap}
+.gn-btn{padding:5px 8px;border-radius:5px;border:1px solid var(--b);background:var(--s2);color:var(--mu);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;touch-action:manipulation}
+.gn-btn.sel{border-color:var(--gr);color:var(--gr);background:rgba(72,187,120,.08)}
+.score-big{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:44px;text-align:center;line-height:1;padding:8px}
+.score-big.sA{color:var(--gr)}.score-big.sB{color:var(--ac)}.score-big.sC{color:var(--bl)}.score-big.sD{color:var(--re)}
+.bac-row{background:var(--s1);border:1px solid var(--b);border-radius:8px;padding:12px;margin-bottom:8px}
+.bac-nom{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px}
+.subscore{background:var(--s2);border-radius:6px;padding:6px 10px;text-align:center;min-width:70px}
+.subscore .sv{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:var(--ac)}
+.subscore .sl{font-size:10px;color:var(--mu)}
+.label-sm{font-size:11px;color:var(--mu);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+/* TOAST */
+.toast{position:fixed;bottom:14px;right:14px;background:var(--ac);color:#000;padding:8px 13px;border-radius:7px;font-weight:600;font-size:13px;z-index:999;pointer-events:none;animation:ti .25s ease,to .25s ease 2.5s forwards}
+@keyframes ti{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+@keyframes to{to{opacity:0}}
+/* UTILS */
+.f{display:flex}.ic{align-items:center}.jb{justify-content:space-between}.fw{flex-wrap:wrap}
+.g6{gap:6px}.g8{gap:8px}.g12{gap:12px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb4{margin-bottom:4px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.mu{color:var(--mu)}.ta{color:var(--ac)}.tg{color:var(--gr)}.tr{color:var(--re)}.tbl{color:var(--bl)}
+.fw7{font-weight:700}.fh{font-family:'Barlow Condensed',sans-serif;font-weight:700}
+.w100{width:100%}.tac{text-align:center}
+.sep{height:1px;background:var(--b);margin:10px 0}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;background:var(--s2);border:1px solid var(--b)}
+/* AFLP3 evolution buttons */
+.ev-btn{width:100%;padding:8px 10px;border-radius:6px;border:2px solid var(--b);background:var(--s2);color:var(--mu);cursor:pointer;font-size:12px;text-align:left;transition:all .15s;touch-action:manipulation;margin-bottom:4px}
+.ev-btn.sel{border-color:var(--ac);color:var(--t);background:rgba(246,201,14,.06)}
+.ev-pts{float:right;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;color:var(--ac)}
+/* HISTORY */
+.hist-item{background:var(--s2);border-radius:6px;padding:8px 12px;margin-bottom:4px;font-size:13px}
+.hist-score{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:var(--ac)}
+/* POULE RESULTS */
+.result-input{width:44px;text-align:center;padding:4px 6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px}
+.rank-gold{color:#f6c90e}.rank-silver{color:#c0c0c0}.rank-bronze{color:#cd7f32}
+/* TOUCH HINT */
+.touch-hint{background:rgba(246,201,14,.08);border:1px solid rgba(246,201,14,.2);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--mu);margin-bottom:8px}
+/* ══ SPLASH PAGE ══ */
+#splash{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#050912}
+#splash.out{animation:sOut .7s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none}
+@keyframes sOut{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
+#court-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.15}
+#ptc{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ptc-item{position:absolute;pointer-events:none;animation:pFloat linear infinite}
+@keyframes pFloat{0%{opacity:0;transform:translateY(110vh) rotate(0deg)}10%{opacity:.7}85%{opacity:.4}100%{opacity:0;transform:translateY(-60px) rotate(540deg)}}
+.spl-wrap{position:relative;z-index:2;text-align:center;padding:20px;width:100%;max-width:480px}
+.spl-shuttle{font-size:72px;display:block;margin-bottom:16px;animation:sShuttle 4s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(246,201,14,.5))}
+@keyframes sShuttle{0%,100%{transform:rotate(-12deg) translateY(0) scale(1)}40%{transform:rotate(12deg) translateY(-18px) scale(1.05)}70%{transform:rotate(-6deg) translateY(-8px) scale(.98)}}
+.spl-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:clamp(42px,8vw,72px);line-height:1;letter-spacing:2px;margin-bottom:4px;background:linear-gradient(135deg,#f6c90e 0%,#ff9800 40%,#f6c90e 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200%;animation:titleShimmer 4s linear infinite}
+@keyframes titleShimmer{0%{background-position:0%}100%{background-position:200%}}
+.spl-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(255,255,255,.35);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.spl-badge{display:inline-block;background:rgba(246,201,14,.1);border:1px solid rgba(246,201,14,.25);border-radius:20px;padding:4px 16px;font-size:12px;color:rgba(246,201,14,.6);letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:32px}
+.spl-card{background:rgba(255,255,255,.03);border:1px solid rgba(246,201,14,.15);border-radius:20px;padding:36px 32px;backdrop-filter:blur(20px);box-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
+.spl-lock{font-size:44px;margin-bottom:20px;display:block;transition:all .4s;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+.spl-lock.open{animation:lockOpen .5s cubic-bezier(.17,.67,.56,1.27) forwards}
+@keyframes lockOpen{0%{transform:rotate(0) scale(1)}30%{transform:rotate(-15deg) scale(1.1)}70%{transform:rotate(10deg) scale(1.15)}100%{transform:rotate(0) scale(1.2)}}
+.spl-label{font-size:13px;color:rgba(255,255,255,.35);margin-bottom:10px;letter-spacing:.5px}
+.spl-input-wrap{position:relative;margin-bottom:14px}
+.spl-input{width:100%;background:rgba(255,255,255,.06);border:2px solid rgba(246,201,14,.2);border-radius:12px;color:#fff;padding:14px 50px 14px 20px;font-size:16px;text-align:center;letter-spacing:6px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .3s,background .3s;-webkit-text-security:disc}
+.spl-input::placeholder{letter-spacing:1px;font-size:14px;-webkit-text-security:none}
+.spl-input:focus{border-color:rgba(246,201,14,.6);background:rgba(255,255,255,.08)}
+.spl-input.err{border-color:rgba(252,129,129,.6);animation:errShake .4s ease}
+@keyframes errShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.spl-btn{width:100%;background:linear-gradient(135deg,#f6c90e,#e5a800);color:#000;border:none;border-radius:12px;padding:15px;font-size:18px;font-weight:800;font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-bottom:12px;box-shadow:0 4px 20px rgba(246,201,14,.25)}
+.spl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 35px rgba(246,201,14,.45)}
+.spl-btn:active{transform:translateY(0)}
+.spl-err{color:#fc8181;font-size:13px;min-height:18px;font-weight:500}
+.spl-hint{color:rgba(255,255,255,.15);font-size:11px;margin-top:14px;letter-spacing:1px}
+.spl-dots{display:flex;justify-content:center;gap:6px;margin-top:20px}
+.spl-dot{width:6px;height:6px;border-radius:50%;background:rgba(246,201,14,.3);animation:dotPulse 2s ease-in-out infinite}
+.spl-dot:nth-child(2){animation-delay:.3s}.spl-dot:nth-child(3){animation-delay:.6s}
+@keyframes dotPulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.4);opacity:.9}}
+.spl-version{position:absolute;bottom:16px;right:20px;font-size:11px;color:rgba(255,255,255,.15);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px}
+</style>
+</head>
+<body>
+<!-- ══ SPLASH PAGE ══ -->
+<div id="splash">
+  <canvas id="court-canvas"></canvas>
+  <div id="ptc"></div>
+  <div class="spl-wrap">
+    <span class="spl-shuttle">🏸</span>
+    <div class="spl-title">BadmintonPRO</div>
+    <div class="spl-sub">Plateforme de gestion EPS</div>
+    <div class="spl-badge">🏫 EPS · ACADÉMIE DE CRÉTEIL</div>
+    <div class="spl-card">
+      <span class="spl-lock" id="spl-lock">🔒</span>
+      <div class="spl-label">Entrez le mot de passe pour accéder à l'application</div>
+      <div class="spl-input-wrap">
+        <input type="password" id="spl-pwd" class="spl-input" placeholder="mot de passe…"
+          autocomplete="off" onkeydown="if(event.key==='Enter')checkPwd()">
+      </div>
+      <button class="spl-btn" onclick="checkPwd()">ACCÉDER →</button>
+      <div id="spl-err" class="spl-err"></div>
+      <div class="spl-hint">BADMINTON · EPS · ENSEIGNEMENT PROFESSIONNEL</div>
+    </div>
+    <div class="spl-dots"><div class="spl-dot"></div><div class="spl-dot"></div><div class="spl-dot"></div></div>
+  </div>
+  <div class="spl-version">v2.0</div>
+</div>
+
+<div class="hd">
+  <div class="logo">🏸<span>Pro</span></div>
+  <nav class="tabs" id="tabs-nav">
+    <button class="tb active" onclick="sw('eleves')">👥 Élèves</button>
+    <button class="tb" onclick="sw('diag')">📊 Diagnostic</button>
+    <button class="tb" onclick="sw('mont')">⬆️ Montante</button>
+    <button class="tb" onclick="sw('poules')">🎯 Poules</button>
+    <button class="tb" onclick="sw('match')">📋 Feuilles Match</button>
+    <button class="tb" onclick="sw('obs')">🔴 Zones Dang.</button>
+    <button class="tb" onclick="sw('atp')">🏆 ATP Tournoi</button>
+    <button class="tb" onclick="sw('bacgen')">🎓 Barème GT</button>
+    <button class="tb" onclick="sw('bacpro')">🎓 Barème Pro</button>
+  </nav>
+  <button class="btn bg bsm" onclick="doReset()">🗑️</button>
+</div>
+
+<!-- ÉLÈVES -->
+<div class="panel active" id="p-eleves">
+  <div class="card">
+    <div class="ct">👥 Élèves <span id="stu-count" class="tag mu">0</span>
+      <button class="btn bd bsm" onclick="clearAllStudents()">🗑️ Tout supprimer</button>
+    </div>
+    <div class="g2 mb12">
+      <div class="fdrop" id="file-drop" onclick="document.getElementById('file-inp').click()" ondragover="ev(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropFile(event)">
+        <div style="font-size:32px;margin-bottom:6px">📂</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px">Importer Excel / CSV</div>
+        <div class="mu" style="font-size:12px">.xlsx, .xls, .csv</div>
+      </div>
+      <div>
+        <div class="label-sm mb8">Ajouter manuellement</div>
+        <div class="f g8 mb8"><input id="add-nom" placeholder="NOM" style="flex:1"><input id="add-prenom" placeholder="Prénom" style="flex:1"></div>
+        <button class="btn bp w100 mb8" onclick="addStudent()">+ Ajouter</button>
+        <button class="btn bg w100 mb4" onclick="exportWithLevels()">⬇️ Export Excel + Niveaux</button>
+        <button class="btn bg w100" onclick="exportStudents()">⬇️ Export CSV simple</button>
+      </div>
+    </div>
+    <input type="file" id="file-inp" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleFile(this.files[0])">
+  </div>
+  <div class="card"><div id="stu-list"></div></div>
+</div>
+
+<!-- DIAGNOSTIC -->
+<div class="panel" id="p-diag">
+  <div class="card">
+    <div class="ct f jb ic">📊 Diagnostic
+      <div class="f g6">
+        <button class="btn bgr bsm" onclick="exportWithLevels()">⬇️ Sauvegarder niveaux (Excel)</button>
+        <span class="mu" style="font-size:11px;align-self:center">→ Re-importez ce fichier pour retrouver les niveaux</span>
+      </div>
+    </div>
+    <div class="g4" id="diag-grid"></div>
+  </div>
+</div>
+
+<!-- MONTANTE -->
+<div class="panel" id="p-mont">
+  <div class="card">
+    <div class="ct jb f">⬆️ Montante (0m→200m) <button class="btn bg bsm" onclick="renderMont()">🔄</button></div>
+    <div class="mu mb8" style="font-size:12px">Glissez les élèves. <strong class="ta">Victoire = monte. Défaite = reste.</strong></div>
+    <div class="mtrack"><div class="mgrid" id="mont-grid"></div></div>
+  </div>
+  <div id="mont-match-card"></div>
+</div>
+
+<!-- POULES -->
+<div class="panel" id="p-poules">
+  <div class="g2">
+    <div>
+      <div class="card">
+        <div class="ct f jb ic">🎯 Poules <button class="btn bp bsm" onclick="addPoule()">+ Poule</button></div>
+        <div class="f g6 mb12" style="flex-wrap:wrap">
+          <button class="btn bgr" onclick="generatePoolsFromDiag()">⚡ Générer depuis Diagnostic</button>
+          <div class="f g6 ic">
+            <span class="mu" style="font-size:11px">Taille :</span>
+            <select id="pool-size-gen" style="width:60px;padding:5px 6px"><option>3</option><option selected>4</option><option>5</option></select>
+            <span class="mu" style="font-size:11px">joueurs/poule</span>
+          </div>
+        </div>
+        <div id="poule-cards" class="pcards"></div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="ct">👤 Non assignés</div>
+        <div class="dz" id="poule-unassigned" ondragover="ev(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropToPoule(event,'unassigned')"><div class="dz-empty">Déposez ici</div></div>
+      </div>
+      <div id="poule-results-panel"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEUILLES MATCH -->
+<div class="panel" id="p-match">
+  <div class="touch-hint">👆 <strong>Toucher</strong> = point normal (✓) &nbsp;|&nbsp; 👆<strong> Maintenir</strong> = point direct (✕)</div>
+  <div class="f ic g8 mb8">
+    <div class="stabs" id="match-stabs" style="flex:1;margin-bottom:0;border:none"></div>
+    <button class="stb-add" onclick="addMatchSheet()" title="Nouvelle poule">＋</button>
+  </div>
+  <div id="match-content"></div>
+</div>
+
+<!-- ZONES DANGEREUSES -->
+<div class="panel" id="p-obs">
+  <div class="f ic g8 mb8">
+    <div class="stabs" id="obs-stabs" style="flex:1;margin-bottom:0;border:none"></div>
+    <button class="stb-add" onclick="addObsPool()" title="Nouvelle poule">＋</button>
+  </div>
+  <div id="obs-content"></div>
+</div>
+
+<!-- ATP TOURNOI -->
+<div class="panel" id="p-atp">
+  <div class="f ic g8 mb8">
+    <div class="stabs" id="atp-stabs" style="flex:1;margin-bottom:0;border:none"></div>
+    <button class="stb-add" onclick="addATPTable()" title="Nouveau tableau">＋</button>
+  </div>
+  <div id="atp-content"></div>
+</div>
+
+<!-- BARÈME GT -->
+<div class="panel" id="p-bacgen">
+  <div class="card">
+    <div class="ct f jb ic">🎓 Barème BAC GT / Techno
+      <div class="f g6">
+        <select id="bacgen-pick" style="width:160px"><option value="">-- Sélectionner --</option></select>
+        <button class="btn bp bsm" onclick="addBacGenSelected()">+ Ajouter</button>
+        <button class="btn bg bsm" onclick="addBacGenAll()">Tous</button>
+      </div>
+    </div>
+    <div class="mu mb8" style="font-size:12px">AFL1=12pts (8+4) · AFL2+AFL3=8pts (répartition élève)</div>
+    <div id="bacgen-list"></div>
+  </div>
+</div>
+
+<!-- BARÈME PRO -->
+<div class="panel" id="p-bacpro">
+  <div class="card">
+    <div class="ct f jb ic">🎓 Barème BAC Professionnel
+      <div class="f g6">
+        <select id="bacpro-pick" style="width:160px"><option value="">-- Sélectionner --</option></select>
+        <button class="btn bp bsm" onclick="addBacProSelected()">+ Ajouter</button>
+        <button class="btn bg bsm" onclick="addBacProAll()">Tous</button>
+      </div>
+    </div>
+    <div class="mu mb8" style="font-size:12px">AFLP1=7pts · AFLP2=5pts · 2×AFLP(3→6)=8pts | AFLP3 calculé via Annexe 1</div>
+    <div id="bacpro-list"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+const KEY = 'bpro_v4';
+function defS() {
+  return {
+    students: [],
+    diagnostic: {},
+    montante: {},
+    poules: [],
+    matchSheets: [],
+    activeSheet: 0,
+    obsPools: [],
+    activeObsPool: 0,
+    atpTables: [],
+    activeATP: 0,
+    bacGen: [],
+    bacPro: []
+  };
+}
+let S = {};
+function loadS() { try { const d = localStorage.getItem(KEY); S = d ? JSON.parse(d) : defS(); } catch(e) { S = defS(); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+loadS();
+
+// ══════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════
+let _id = Date.now();
+function uid() { return 'x' + (++_id); }
+function ev(e) { e.preventDefault(); e.stopPropagation(); }
+function toast(msg) {
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2900);
+}
+function sw(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('active');
+  const idx = ['eleves','diag','mont','poules','match','obs','atp','bacgen','bacpro'].indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.tb')[idx].classList.add('active');
+  const renders = { eleves: renderStudents, diag: renderDiag, mont: renderMont, poules: renderPoules, match: renderMatch, obs: renderObs, atp: renderATP, bacgen: renderBacGen, bacpro: renderBacPro };
+  if (renders[id]) renders[id]();
+}
+function doReset() {
+  if (confirm('Réinitialiser TOUTES les données ?')) { S = defS(); save(); location.reload(); }
+}
+let dragStu = null;
+
+// ══════════════════════════════════════════════════════════
+// TOUCH HANDLING
+// ══════════════════════════════════════════════════════════
+function addTapHandlers(el, onNormal, onDirect) {
+  let timer = null, fired = false, sx, sy;
+  el.addEventListener('touchstart', function(e) {
+    fired = false;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    timer = setTimeout(() => {
+      fired = true;
+      if (navigator.vibrate) navigator.vibrate(30);
+      onDirect();
+    }, 550);
+  }, { passive: true });
+  el.addEventListener('touchmove', function(e) {
+    if (!e.touches[0]) return;
+    if (Math.abs(e.touches[0].clientX - sx) > 10 || Math.abs(e.touches[0].clientY - sy) > 10) {
+      clearTimeout(timer); fired = true;
+    }
+  }, { passive: true });
+  el.addEventListener('touchend', function(e) {
+    clearTimeout(timer);
+    if (!fired) { e.preventDefault(); onNormal(); }
+    fired = false;
+  });
+  el.addEventListener('click', function(e) { if (e.isTrusted && e.detail > 0) onNormal(); });
+  el.addEventListener('contextmenu', function(e) { e.preventDefault(); onDirect(); });
+}
+
+// ══════════════════════════════════════════════════════════
+// ÉLÈVES
+// ══════════════════════════════════════════════════════════
+function renderStudents() {
+  const el = document.getElementById('stu-list');
+  const stus = S.students;
+  document.getElementById('stu-count').textContent = stus.length;
+  if (!stus.length) { el.innerHTML = '<div class="es"><div class="es-icon">📋</div><div>Importez un fichier ou ajoutez des élèves manuellement</div></div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>#</th><th>NOM</th><th>Prénom</th><th>Niv.</th><th></th></tr></thead><tbody>
+    ${stus.map((s,i) => `<tr><td class="mu" style="font-size:11px">${i+1}</td>
+      <td class="fw7">${s.nom}</td><td>${s.prenom||'—'}</td>
+      <td>${S.diagnostic[s.id] ? `<span class="lbadge l${S.diagnostic[s.id]}">N${S.diagnostic[s.id]}</span>` : '<span class="mu">—</span>'}</td>
+      <td><button class="btn bd bsm" onclick="rmStu('${s.id}')">✕</button></td>
+    </tr>`).join('')}</tbody></table>`;
+  refreshPickers();
+}
+function addStudent() {
+  const nom = document.getElementById('add-nom').value.trim().toUpperCase();
+  const prenom = document.getElementById('add-prenom').value.trim();
+  if (!nom) { toast('⚠️ Saisissez un nom'); return; }
+  if (S.students.some(s => s.nom === nom && (s.prenom||'') === prenom)) { toast('⚠️ Élève déjà présent'); return; }
+  S.students.push({ id: uid(), nom, prenom });
+  S.students.sort((a,b) => a.nom.localeCompare(b.nom));
+  save(); renderStudents();
+  document.getElementById('add-nom').value = ''; document.getElementById('add-prenom').value = '';
+}
+function rmStu(id) { S.students = S.students.filter(s => s.id !== id); delete S.diagnostic[id]; delete S.montante[id]; S.poules.forEach(p => p.stuIds = p.stuIds.filter(x => x !== id)); save(); renderStudents(); }
+function clearAllStudents() { if (confirm('Supprimer tous les élèves ?')) { S.students = []; S.diagnostic = {}; S.montante = {}; S.poules.forEach(p => p.stuIds = []); save(); renderStudents(); toast('✓ Tous supprimés'); } }
+function exportStudents() {
+  const csv = 'Nom;Prénom;Niveau\n' + S.students.map(s => `${s.nom};${s.prenom||''};${S.diagnostic[s.id]||''}`).join('\n');
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv); a.download = 'eleves.csv'; a.click();
+}
+function exportWithLevels() {
+  try {
+    const rows = [['Nom','Prénom','Niveau']];
+    S.students.forEach(s => rows.push([s.nom, s.prenom||'', S.diagnostic[s.id]||'']));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:22},{wch:16},{wch:10}];
+    // Bold the header
+    ['A1','B1','C1'].forEach(cell => { if(ws[cell]) ws[cell].s = {font:{bold:true}}; });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Élèves_Niveaux');
+    XLSX.writeFile(wb, 'eleves_niveaux_badminton.xlsx');
+    toast('✓ Export Excel avec niveaux (réimportable)');
+  } catch(e) { toast('⚠️ Erreur export: ' + e.message); }
+}
+function dropFile(e) { ev(e); document.getElementById('file-drop').classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }
+function handleFile(f) {
+  if (!f) return;
+  const ext = f.name.split('.').pop().toLowerCase();
+  const r = new FileReader();
+  if (ext === 'csv') { r.onload = e => parseCSV(e.target.result); r.readAsText(f, 'UTF-8'); }
+  else { r.onload = e => parseXLSX(new Uint8Array(e.target.result)); r.readAsArrayBuffer(f); }
+}
+function parseCSV(text) { processRows(text.split(/\r?\n/).filter(l => l.trim()).map(l => l.split(/[;,\t]/))); }
+function parseXLSX(data) { try { const wb = XLSX.read(data, { type: 'array' }); processRows(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 })); } catch(e) { toast('⚠️ Erreur lecture fichier'); } }
+function processRows(rows) {
+  if (!rows.length) return;
+  let nomCol = 0, prenomCol = 1, niveauCol = -1, start = 0;
+  const h = (rows[0] || []).map(c => String(c||'').toLowerCase().trim());
+  h.forEach((v,i) => {
+    if (/^nom$|^nom\s/.test(v) && !/pr/.test(v)) nomCol = i;
+    else if (nomCol === 0 && /nom/.test(v) && !/pr/.test(v)) nomCol = i;
+    if (/pr.+nom|prénom|prenom/.test(v)) prenomCol = i;
+    if (/niveau|niv\b|level/.test(v)) niveauCol = i;
+  });
+  if (h.some(v => /nom|pr.+nom|élève|eleve|name|niveau/i.test(v))) start = 1;
+  let count = 0, lvCount = 0;
+  rows.slice(start).forEach(r => {
+    const nom = String(r[nomCol]||'').trim().toUpperCase();
+    const prenom = String(r[prenomCol]||'').trim();
+    if (!nom || nom === 'NOM' || nom.length < 2) return;
+    let stu = S.students.find(s => s.nom === nom && (s.prenom||'').toLowerCase() === prenom.toLowerCase());
+    if (!stu) { stu = { id: uid(), nom, prenom }; S.students.push(stu); count++; }
+    if (niveauCol >= 0) {
+      const raw = String(r[niveauCol]||'').trim();
+      const nv = raw.replace(/[^0-9]/g, ''); // extract digit: "Niveau 2" → "2"
+      if (['1','2','3'].includes(nv)) { S.diagnostic[stu.id] = nv; lvCount++; }
+    }
+  });
+  S.students.sort((a,b) => a.nom.localeCompare(b.nom));
+  save(); renderStudents();
+  let msg = `✓ ${count} élève(s) importé(s)`;
+  if (lvCount) msg += ` · ${lvCount} niveau(x) restauré(s)`;
+  toast(msg);
+}
+function refreshPickers() {
+  ['bacgen-pick', 'bacpro-pick'].forEach(id => {
+    const sel = document.getElementById(id); if (!sel) return;
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">-- Sélectionner un élève --</option>' + S.students.map(s => `<option value="${s.id}">${s.nom}${s.prenom ? ' ' + s.prenom : ''}</option>`).join('');
+    sel.value = cur;
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// DIAGNOSTIC
+// ══════════════════════════════════════════════════════════
+function renderDiag() {
+  const levels = [{ k:'0', l:'⏳ Non classés', c:'l0' }, { k:'1', l:'🟡 Niveau 1', c:'l1' }, { k:'2', l:'🔵 Niveau 2', c:'l2' }, { k:'3', l:'🟢 Niveau 3', c:'l3' }];
+  document.getElementById('diag-grid').innerHTML = levels.map(lv => {
+    const stus = S.students.filter(s => (S.diagnostic[s.id]||'0') === lv.k);
+    return `<div class="card" style="margin:0"><div class="label-sm mb8"><span class="lbadge ${lv.c}">${lv.l}</span> <span class="mu">${stus.length}</span></div>
+      <div class="dz" id="dz-${lv.k}" ondragover="ev(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropDiag(event,'${lv.k}')">
+        ${stus.length ? stus.map(s => `<div class="chip" draggable="true" ondragstart="dragStu='${s.id}';this.classList.add('dragging')" ondragend="this.classList.remove('dragging');renderDiag()">${s.nom}${s.prenom?' '+s.prenom.charAt(0)+'.':''}</div>`).join('') : '<div class="dz-empty">Déposez ici</div>'}
+      </div></div>`;
+  }).join('');
+}
+function dropDiag(e, lv) { ev(e); document.querySelectorAll('.dz').forEach(d => d.classList.remove('over')); if (!dragStu) return; if (lv==='0') delete S.diagnostic[dragStu]; else S.diagnostic[dragStu] = lv; dragStu = null; save(); renderDiag(); }
+
+// ══════════════════════════════════════════════════════════
+// MONTANTE
+// ══════════════════════════════════════════════════════════
+const MPOS = [0,25,50,75,100,125,150,175,200];
+function renderMont() {
+  S.students.forEach(s => { if (S.montante[s.id] === undefined) S.montante[s.id] = 0; });
+  document.getElementById('mont-grid').innerHTML = MPOS.map(pos => {
+    const stus = S.students.filter(s => S.montante[s.id] === pos);
+    return `<div class="mcell" id="mc-${pos}" ondragover="ev(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropMont(event,${pos})">
+      <div class="mcell-hdr">${pos}m</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">
+        ${stus.map(s => `<div class="chip" style="font-size:11px" draggable="true" ondragstart="dragStu='${s.id}';this.classList.add('dragging')" ondragend="this.classList.remove('dragging')">${s.nom.substring(0,8)}${s.prenom?' '+s.prenom.charAt(0)+'.':''}</div>`).join('')}
+        ${!stus.length ? '<span class="mu" style="font-size:10px">—</span>' : ''}
+      </div>
+      ${stus.length >= 2 ? `<button class="btn bg bsm mt8 w100" style="font-size:10px" onclick="openMontMatch(${pos})">🏸 Match</button>` : ''}
+    </div>`;
+  }).join('');
+  save();
+}
+function dropMont(e, pos) { ev(e); document.querySelectorAll('.mcell').forEach(c => c.classList.remove('over')); if (dragStu === null) return; S.montante[dragStu] = pos; dragStu = null; save(); renderMont(); }
+function openMontMatch(pos) {
+  const stus = S.students.filter(s => S.montante[s.id] === pos);
+  const card = document.getElementById('mont-match-card');
+  card.innerHTML = `<div class="card"><div class="ct">🏸 Match — ${pos}m</div>
+    <div class="f g8 ic mb12">
+      <select id="mm1" style="flex:1">${stus.map(s=>`<option value="${s.id}">${s.nom}${s.prenom?' '+s.prenom:''}</option>`).join('')}</select>
+      <span class="fh ta" style="font-size:18px">VS</span>
+      <select id="mm2" style="flex:1">${stus.map(s=>`<option value="${s.id}">${s.nom}${s.prenom?' '+s.prenom:''}</option>`).join('')}</select>
+    </div>
+    <div class="f g8">
+      <button class="btn bgr w100" onclick="montResult(${pos},'p1')">🏆 J1 gagne</button>
+      <button class="btn bgr w100" onclick="montResult(${pos},'p2')">🏆 J2 gagne</button>
+    </div>
+    <button class="btn bg w100 mt8" onclick="document.getElementById('mont-match-card').innerHTML=''">✕ Annuler</button>
+  </div>`;
+  card.scrollIntoView({ behavior: 'smooth' });
+}
+function montResult(pos, w) {
+  const p1 = document.getElementById('mm1').value, p2 = document.getElementById('mm2').value;
+  if (p1 === p2) { toast('⚠️ Joueurs différents !'); return; }
+  const wId = w === 'p1' ? p1 : p2;
+  const ci = MPOS.indexOf(S.montante[wId]);
+  if (ci < MPOS.length - 1) S.montante[wId] = MPOS[ci + 1];
+  document.getElementById('mont-match-card').innerHTML = '';
+  save(); renderMont();
+  const winner = S.students.find(s => s.id === wId);
+  toast(`🏆 ${winner?.nom} → ${S.montante[wId]}m`);
+}
+
+// ══════════════════════════════════════════════════════════
+// POULES
+// ══════════════════════════════════════════════════════════
+function renderPoules() {
+  const cards = document.getElementById('poule-cards');
+  const unass = document.getElementById('poule-unassigned');
+  const assigned = new Set(S.poules.flatMap(p => p.stuIds || []));
+  const unassigned = S.students.filter(s => !assigned.has(s.id));
+  unass.innerHTML = unassigned.length ? unassigned.map(s => pouleChip(s, 'unassigned')).join('') : '<div class="dz-empty">Tous assignés</div>';
+  if (!S.poules.length) { cards.innerHTML = '<div class="mu" style="font-size:12px">Cliquez "+ Poule"</div>'; return; }
+  cards.innerHTML = S.poules.map(p => {
+    const stus = (p.stuIds||[]).map(id => S.students.find(s => s.id === id)).filter(Boolean);
+    return `<div class="pcard">
+      <div class="pcard-hdr">
+        <input value="${p.name}" style="width:110px;padding:4px 6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;text-transform:uppercase" onchange="renamePoule('${p.id}',this.value)">
+        <div class="f g6 ic"><span class="tag">${stus.length}j</span><button class="btn bd bsm" onclick="rmPoule('${p.id}')">✕</button></div>
+      </div>
+      <div class="dz" style="min-height:50px" id="pdz-${p.id}" ondragover="ev(event);this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="dropToPoule(event,'${p.id}')">
+        ${stus.map(s => pouleChip(s, p.id)).join('')}
+        ${!stus.length ? '<div class="dz-empty" style="font-size:10px">Glissez ici</div>' : ''}
+      </div>
+      ${stus.length >= 2 ? `<button class="btn bg bsm mt8 w100" onclick="showPouleResults('${p.id}')">📋 Résultats & Classement</button>` : ''}
+    </div>`;
+  }).join('');
+}
+function pouleChip(s, from) {
+  return `<div class="chip" draggable="true" ondragstart="dragStu='${s.id}';this.classList.add('dragging')" ondragend="this.classList.remove('dragging');renderPoules()" style="font-size:11px">${s.nom.substring(0,10)}${s.prenom?' '+s.prenom.charAt(0)+'.':''}</div>`;
+}
+function dropToPoule(e, pid) { ev(e); document.querySelectorAll('.dz').forEach(d => d.classList.remove('over')); if (!dragStu) return; S.poules.forEach(p => { p.stuIds = (p.stuIds||[]).filter(x => x !== dragStu); }); if (pid !== 'unassigned') { const p = S.poules.find(x => x.id === pid); if (p && !p.stuIds.includes(dragStu)) p.stuIds.push(dragStu); } dragStu = null; save(); renderPoules(); }
+function addPoule() { S.poules.push({ id: uid(), name: 'Poule ' + (S.poules.length + 1), stuIds: [], results: {} }); save(); renderPoules(); }
+function rmPoule(id) { if (confirm('Supprimer cette poule ?')) { S.poules = S.poules.filter(p => p.id !== id); save(); renderPoules(); } }
+function renamePoule(id, name) { const p = S.poules.find(x => x.id === id); if (p) { p.name = name; save(); } }
+
+function generatePoolsFromDiag() {
+  const total = S.students.length;
+  if (!total) { toast('⚠️ Aucun élève importé'); return; }
+  const classifiedCount = S.students.filter(s => S.diagnostic[s.id] && S.diagnostic[s.id] !== '0').length;
+  if (classifiedCount === 0) { toast('⚠️ Faites d\'abord le diagnostic dans l\'onglet 📊'); return; }
+
+  const size = parseInt(document.getElementById('pool-size-gen')?.value || '4');
+  const hasExisting = S.poules.length > 0;
+  if (hasExisting && !confirm(`Remplacer les ${S.poules.length} poule(s) existante(s) par de nouvelles poules de niveau ?`)) return;
+
+  S.poules = [];
+  const levelCfg = [
+    { lv:'1', prefix:'N1', color:'🟡' },
+    { lv:'2', prefix:'N2', color:'🔵' },
+    { lv:'3', prefix:'N3', color:'🟢' }
+  ];
+
+  let totalPools = 0;
+  levelCfg.forEach(({ lv, prefix }) => {
+    const stus = S.students.filter(s => S.diagnostic[s.id] === lv);
+    if (!stus.length) return;
+    // Distribute evenly: if 7 students with size 4 → pool of 4 + pool of 3
+    const numPools = Math.ceil(stus.length / size);
+    const baseSize = Math.floor(stus.length / numPools);
+    let extra = stus.length % numPools;
+    let idx = 0;
+    for (let g = 0; g < numPools; g++) {
+      const thisSize = baseSize + (extra-- > 0 ? 1 : 0);
+      const group = stus.slice(idx, idx + thisSize);
+      idx += thisSize;
+      const name = numPools > 1 ? `${prefix}-${g+1}` : prefix;
+      S.poules.push({ id: uid(), name, stuIds: group.map(s => s.id), results: {} });
+      totalPools++;
+    }
+  });
+
+  // Non-classified at the end
+  const nc = S.students.filter(s => !S.diagnostic[s.id] || S.diagnostic[s.id] === '0');
+  if (nc.length) {
+    const numPools = Math.ceil(nc.length / size);
+    const baseSize = Math.floor(nc.length / numPools);
+    let extra = nc.length % numPools;
+    let idx = 0;
+    for (let g = 0; g < numPools; g++) {
+      const thisSize = baseSize + (extra-- > 0 ? 1 : 0);
+      const group = nc.slice(idx, idx + thisSize);
+      idx += thisSize;
+      S.poules.push({ id: uid(), name: numPools > 1 ? `NC-${g+1}` : 'Non classés', stuIds: group.map(s => s.id), results: {} });
+      totalPools++;
+    }
+  }
+
+  save(); renderPoules();
+  toast(`⚡ ${totalPools} poule(s) générée(s) (${size}j/poule) !`);
+}
+
+function showPouleResults(pid) {
+  const poule = S.poules.find(p => p.id === pid);
+  if (!poule) return;
+  if (!poule.results) poule.results = {};
+  const stus = (poule.stuIds||[]).map(id => S.students.find(s => s.id === id)).filter(Boolean);
+  const n = stus.length;
+  const pairs = [];
+  for (let i=0;i<n;i++) for (let j=i+1;j<n;j++) pairs.push([i,j]);
+
+  let matchHTML = pairs.map(([i,j]) => {
+    const key = `${i}_${j}`;
+    const r = poule.results[key] || { s1:'', s2:'' };
+    return `<tr>
+      <td class="fw7">${stus[i].nom}</td>
+      <td><input class="result-input" id="pr-${pid}-${key}-a" value="${r.s1||''}" placeholder="?" onchange="savePouleResult('${pid}','${key}',0,this.value)"></td>
+      <td class="mu tac fh" style="font-size:18px">—</td>
+      <td><input class="result-input" id="pr-${pid}-${key}-b" value="${r.s2||''}" placeholder="?" onchange="savePouleResult('${pid}','${key}',1,this.value)"></td>
+      <td class="fw7">${stus[j].nom}</td>
+    </tr>`;
+  }).join('');
+
+  // Calculate standings
+  const stats = stus.map((s,i) => ({ s, i, wins:0, sets:0, pts:0 }));
+  pairs.forEach(([i,j]) => {
+    const key = `${i}_${j}`;
+    const r = poule.results[key] || {};
+    const a = parseInt(r.s1||0), b = parseInt(r.s2||0);
+    if (a > b) { stats[i].wins++; stats[i].pts += 3; stats[j].pts += 0; }
+    else if (b > a) { stats[j].wins++; stats[j].pts += 3; stats[i].pts += 0; }
+    else if (a > 0 && a === b) { stats[i].pts++; stats[j].pts++; }
+    stats[i].sets += a; stats[j].sets += b;
+  });
+  stats.sort((a,b) => b.pts - a.pts || b.wins - a.wins || b.sets - a.sets);
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+
+  document.getElementById('poule-results-panel').innerHTML = `<div class="card">
+    <div class="ct">📋 ${poule.name} — Résultats</div>
+    <table style="margin-bottom:12px">
+      <thead><tr><th>J.</th><th colspan="4" style="text-align:center">Score (sets gagnés)</th><th>J.</th></tr></thead>
+      <tbody>${matchHTML}</tbody>
+    </table>
+    <div class="ct">🏆 Classement</div>
+    <table><thead><tr><th>#</th><th>Joueur</th><th>Pts</th><th>V</th><th>Sets+</th></tr></thead>
+    <tbody>${stats.map((st,i) => `<tr><td class="fh" style="font-size:18px">${medals[i]||i+1}</td><td class="fw7">${st.s.nom}</td><td class="ta fw7">${st.pts}</td><td>${st.wins}</td><td class="mu">${st.sets}</td></tr>`).join('')}</tbody></table>
+  </div>`;
+}
+
+function savePouleResult(pid, key, side, val) {
+  const p = S.poules.find(x => x.id === pid);
+  if (!p) return; if (!p.results) p.results = {};
+  if (!p.results[key]) p.results[key] = { s1:'', s2:'' };
+  if (side === 0) p.results[key].s1 = val; else p.results[key].s2 = val;
+  save(); showPouleResults(pid);
+}
+
+// ══════════════════════════════════════════════════════════
+// FEUILLES DE MATCH — Multiple pools
+// ══════════════════════════════════════════════════════════
+function newMatchSheet() {
+  return { id: uid(), name: 'Poule ' + (S.matchSheets.length + 1), ps: 4, pnames: ['','','',''], sets: {}, active: false };
+}
+function renderMatch() {
+  if (!S.matchSheets.length) { S.matchSheets.push(newMatchSheet()); }
+  const stabs = document.getElementById('match-stabs');
+  stabs.innerHTML = S.matchSheets.map((sh,i) => `<button class="stb${S.activeSheet===i?' active':''}" onclick="switchSheet(${i})">${sh.name}</button>`).join('');
+  buildMatchContent();
+}
+function addMatchSheet() {
+  S.matchSheets.push(newMatchSheet());
+  S.activeSheet = S.matchSheets.length - 1;
+  save(); renderMatch();
+}
+function switchSheet(i) { S.activeSheet = i; save(); renderMatch(); }
+
+function buildMatchContent() {
+  const sh = S.matchSheets[S.activeSheet];
+  if (!sh) return;
+  const n = sh.ps;
+  const maxPts = n === 4 ? 11 : 15;
+
+  const playerInputs = Array.from({length:n},(_,i) => `<div class="f g8 ic mb8">
+    <span class="fh ta" style="min-width:20px">J${i+1}</span>
+    <input id="pp-${i}" placeholder="Joueur ${i+1}" style="flex:1" value="${sh.pnames[i]||''}"
+      oninput="S.matchSheets[S.activeSheet].pnames[${i}]=this.value;save()" list="stu-dl">
+  </div>`).join('') + `<datalist id="stu-dl">${S.students.map(s=>`<option value="${s.nom}${s.prenom?' '+s.prenom:''}">`).join('')}</datalist>`;
+
+  let sheetHTML = '';
+  if (sh.active) {
+    const pairs = getMatchups(n, sh.pnames);
+    pairs.forEach((pair, pi) => {
+      [1,2].forEach(sn => {
+        const key = `${pi}_${sn}`;
+        if (!sh.sets[key]) sh.sets[key] = { a:[], b:[] };
+        const set = sh.sets[key];
+        const sa = set.a.length, sb = set.b.length;
+        const done = sa >= maxPts || sb >= maxPts;
+        const win = done ? (sa >= maxPts ? sh.pnames[pair.a] : sh.pnames[pair.b]) : '';
+        sheetHTML += `<div class="set-block">
+          <div class="set-hdr${done?' won':''}">
+            <span>${sh.pnames[pair.a]} vs ${sh.pnames[pair.b]} — Set ${sn}</span>
+            <span class="f g6 ic">${pair.arb?`<span class="mu" style="font-size:10px">Arb: ${pair.arb}</span>`:''}${done?`<span class="tg fw7">🏆 ${win}</span>`:''}</span>
+          </div>
+          ${makePlayerRow(sh.pnames[pair.a], key, 'a', sa, set.b.length, done, maxPts, set.a)}
+          ${makePlayerRow(sh.pnames[pair.b], key, 'b', sb, set.a.length, done, maxPts, set.b)}
+        </div>`;
+      });
+    });
+    sheetHTML += buildMatchSummary(sh);
+  }
+
+  document.getElementById('match-content').innerHTML = `<div class="g2">
+    <div class="card">
+      <div class="ct f jb ic">${sh.name}
+        <button class="btn bd bsm" onclick="rmSheet()" title="Supprimer cette poule">✕</button>
+      </div>
+      <input value="${sh.name}" style="margin-bottom:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase" oninput="S.matchSheets[S.activeSheet].name=this.value;save();renderMatch()">
+      <div class="label-sm mb8">Taille de la poule</div>
+      <div class="f g8 mb12">
+        ${[3,4,5].map(x => `<button class="btn ${sh.ps===x?'bp':'bg'}" onclick="setPS(${x})">${x}j</button>`).join('')}
+      </div>
+      <div class="label-sm mb8">Joueurs</div>
+      ${playerInputs}
+      <div class="sep"></div>
+      <button class="btn bp w100 mb8" onclick="initMatchSheet()">▶️ Démarrer</button>
+      <button class="btn bg w100" onclick="resetMatchSheet()">🔄 Réinitialiser</button>
+      <div class="sep"></div>
+      <div class="mu" style="font-size:11px">
+        <div>👆 Toucher zone = <span class="tg">✓ point normal</span></div>
+        <div class="mt8">👆 Maintenir = <span class="tr">✕ point direct</span></div>
+        <div class="mt8">Toucher un point existant = supprimer</div>
+      </div>
+    </div>
+    <div>${sh.active ? sheetHTML : '<div class="es"><div class="es-icon">📋</div><div>Configurez et démarrez la feuille</div></div>'}</div>
+  </div>`;
+
+  // Attach touch handlers after render
+  if (sh.active) {
+    const pairs = getMatchups(n, sh.pnames);
+    pairs.forEach((pair, pi) => {
+      [1,2].forEach(sn => {
+        const key = `${pi}_${sn}`;
+        ['a','b'].forEach(side => {
+          const el = document.getElementById(`ta-${key}-${side}`);
+          if (el) addTapHandlers(el, () => addPoint(key, side, 'n'), () => addPoint(key, side, 'd'));
+        });
+      });
+    });
+  }
+}
+
+function makePlayerRow(name, key, side, score, oppScore, done, maxPts, marks) {
+  const isLead = score > oppScore, isWin = done && score >= maxPts;
+  const marksHTML = marks.map((type,i) => `<span class="tm ${type==='d'?'td2':'tn'}" onclick="rmPoint('${key}','${side}',${i})">${type==='d'?'✕':'✓'}</span>`).join('');
+  return `<div class="player-row">
+    <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</div>
+    <div class="tally-area" id="ta-${key}-${side}">${marksHTML}${!done?'<span class="mu" style="font-size:10px;margin-left:2px">+</span>':''}</div>
+    <div class="score-num${isWin?' win':isLead?' lead':''}">${score}</div>
+  </div>`;
+}
+
+function addPoint(key, side, type) {
+  const sh = S.matchSheets[S.activeSheet]; if (!sh || !sh.sets[key]) return;
+  const n = sh.ps, maxPts = n === 4 ? 11 : 15;
+  const set = sh.sets[key];
+  if (set[side].length >= maxPts || set[side === 'a' ? 'b' : 'a'].length >= maxPts) return;
+  set[side].push(type); save(); buildMatchContent();
+}
+function rmPoint(key, side, idx) { const sh = S.matchSheets[S.activeSheet]; if (!sh || !sh.sets[key]) return; sh.sets[key][side].splice(idx, 1); save(); buildMatchContent(); }
+function setPS(n) { const sh = S.matchSheets[S.activeSheet]; if (!sh) return; sh.ps = n; while (sh.pnames.length < n) sh.pnames.push(''); save(); buildMatchContent(); }
+function initMatchSheet() { const sh = S.matchSheets[S.activeSheet]; if (!sh) return; sh.sets = {}; sh.active = true; save(); buildMatchContent(); toast('✓ Démarré'); }
+function resetMatchSheet() { const sh = S.matchSheets[S.activeSheet]; if (!sh) return; sh.sets = {}; sh.active = false; save(); buildMatchContent(); }
+function rmSheet() { if (S.matchSheets.length <= 1) { toast('⚠️ Au moins une feuille requise'); return; } if (confirm('Supprimer cette feuille ?')) { S.matchSheets.splice(S.activeSheet, 1); S.activeSheet = Math.max(0, S.activeSheet - 1); save(); renderMatch(); } }
+
+function getMatchups(n, names) {
+  const pairs = [];
+  for (let i=0;i<n;i++) for (let j=i+1;j<n;j++) { const arbs = names.filter((_,k)=>k!==i&&k!==j); pairs.push({ a:i, b:j, arb:arbs[0]||'' }); }
+  return pairs;
+}
+
+function buildMatchSummary(sh) {
+  const n = sh.ps, maxPts = n === 4 ? 11 : 15;
+  const names = sh.pnames;
+  const pairs = getMatchups(n, names);
+  const stats = names.map((name,i) => ({ name, wins:0, pts:0, i }));
+  pairs.forEach((pair, pi) => {
+    let wA = 0, wB = 0, pA = 0, pB = 0;
+    [1,2].forEach(sn => {
+      const set = sh.sets[`${pi}_${sn}`]; if (!set) return;
+      if (set.a.length >= maxPts) wA++; else if (set.b.length >= maxPts) wB++;
+      pA += set.a.length; pB += set.b.length;
+    });
+    if (wA > wB) stats[pair.a].wins++; else if (wB > wA) stats[pair.b].wins++;
+    stats[pair.a].pts += pA; stats[pair.b].pts += pB;
+  });
+  stats.sort((a,b) => b.wins - a.wins || b.pts - a.pts);
+  const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+  return `<div class="card"><div class="ct">🏆 Classement</div>
+    <table><thead><tr><th>#</th><th>Joueur</th><th>V</th><th>Pts marqués</th></tr></thead>
+    <tbody>${stats.map((st,i) => `<tr><td class="fh" style="font-size:16px">${medals[i]||i+1}</td><td class="fw7">${st.name}</td><td class="ta fw7">${st.wins}</td><td>${st.pts}</td></tr>`).join('')}</tbody></table>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ZONES DANGEREUSES — Multiple pools
+// ══════════════════════════════════════════════════════════
+function newObsPool() {
+  return { id: uid(), name: 'Poule ' + (S.obsPools.length + 1), ps: 3, pnames: ['','',''], data: {}, active: false };
+}
+function renderObs() {
+  if (!S.obsPools.length) { S.obsPools.push(newObsPool()); }
+  document.getElementById('obs-stabs').innerHTML = S.obsPools.map((p,i) => `<button class="stb${S.activeObsPool===i?' active':''}" onclick="switchObsPool(${i})">${p.name}</button>`).join('');
+  buildObsContent();
+}
+function addObsPool() { S.obsPools.push(newObsPool()); S.activeObsPool = S.obsPools.length - 1; save(); renderObs(); }
+function switchObsPool(i) { S.activeObsPool = i; save(); renderObs(); }
+
+function buildObsContent() {
+  const pool = S.obsPools[S.activeObsPool]; if (!pool) return;
+  const n = pool.ps;
+  const playerInputs = Array.from({length:n},(_,i) => `<div class="f g8 ic mb8">
+    <span class="fh ta" style="min-width:20px">J${i+1}</span>
+    <input id="op-${i}" placeholder="Joueur ${i+1}" style="flex:1" value="${pool.pnames[i]||''}"
+      oninput="S.obsPools[S.activeObsPool].pnames[${i}]=this.value;save()" list="stu-dl-obs">
+  </div>`).join('') + `<datalist id="stu-dl-obs">${S.students.map(s=>`<option value="${s.nom}${s.prenom?' '+s.prenom:''}">`).join('')}</datalist>`;
+
+  let sheetHTML = '';
+  if (pool.active) {
+    const pairs = getMatchups(n, pool.pnames);
+    pairs.forEach((pair, pi) => {
+      [1,2].forEach(sn => {
+        const key = `${pi}_${sn}`;
+        if (!pool.data[key]) pool.data[key] = { a:{c:0,d:0}, b:{c:0,d:0} };
+        const od = pool.data[key];
+        sheetHTML += `<div class="set-block"><div class="set-hdr"><span>${pool.pnames[pair.a]} vs ${pool.pnames[pair.b]} — Set ${sn}</span></div>
+          <div style="padding:10px">
+          <table><thead><tr><th>Joueur</th><th>🟡 Zone centrale</th><th>🔴 Zones dang.</th><th>% ZD</th></tr></thead>
+          <tbody>${['a','b'].map((side,si) => {
+            const nm = side==='a'?pool.pnames[pair.a]:pool.pnames[pair.b];
+            const dat = od[side]; const tot = dat.c+dat.d;
+            const ratio = tot>0?Math.round(dat.d/tot*100):0;
+            return `<tr><td class="fw7" style="font-size:12px">${nm}</td>
+              <td><div class="obs-cnt"><button class="ob obm" onclick="adjObs('${key}','${side}','c',-1)">−</button><div class="obs-val">${dat.c}</div><button class="ob obp" onclick="adjObs('${key}','${side}','c',1)">+</button></div></td>
+              <td><div class="obs-cnt"><button class="ob obm" onclick="adjObs('${key}','${side}','d',-1)">−</button><div class="obs-val" style="color:var(--re)">${dat.d}</div><button class="ob obp" onclick="adjObs('${key}','${side}','d',1)">+</button></div></td>
+              <td><span class="fh" style="font-size:18px;color:${ratio>=50?'var(--gr)':'var(--re)'}">${ratio}%</span></td>
+            </tr>`;
+          }).join('')}</tbody></table></div></div>`;
+      });
+    });
+    sheetHTML += buildObsSummary(pool);
+  }
+
+  document.getElementById('obs-content').innerHTML = `<div class="g2">
+    <div class="card">
+      <div class="ct f jb ic">🔴 Zones Dangereuses
+        <button class="btn bd bsm" onclick="rmObsPool()">✕</button>
+      </div>
+      <input value="${pool.name}" style="margin-bottom:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase" oninput="S.obsPools[S.activeObsPool].name=this.value;save();renderObs()">
+      <div class="label-sm mb8">Taille poule</div>
+      <div class="f g8 mb12">${[3,4].map(x => `<button class="btn ${pool.ps===x?'bp':'bg'}" onclick="setOPS(${x})">${x}j</button>`).join('')}</div>
+      <div class="label-sm mb8">Joueurs</div>
+      ${playerInputs}
+      <div class="sep"></div>
+      <button class="btn bp w100 mb8" onclick="initObs()">▶️ Démarrer</button>
+      <button class="btn bg w100" onclick="resetObs()">🔄 Réinitialiser</button>
+    </div>
+    <div>${pool.active ? sheetHTML : '<div class="es"><div class="es-icon">🔴</div><div>Configurez et démarrez l\'observation</div></div>'}</div>
+  </div>`;
+}
+function setOPS(n) { const p = S.obsPools[S.activeObsPool]; if (!p) return; p.ps = n; while (p.pnames.length < n) p.pnames.push(''); save(); buildObsContent(); }
+function initObs() { const p = S.obsPools[S.activeObsPool]; if (!p) return; p.data = {}; p.active = true; save(); buildObsContent(); toast('✓ Observation démarrée'); }
+function resetObs() { const p = S.obsPools[S.activeObsPool]; if (!p) return; p.data = {}; p.active = false; save(); buildObsContent(); }
+function rmObsPool() { if (S.obsPools.length <= 1) { toast('⚠️ Au moins une poule requise'); return; } if (confirm('Supprimer ?')) { S.obsPools.splice(S.activeObsPool, 1); S.activeObsPool = Math.max(0, S.activeObsPool - 1); save(); renderObs(); } }
+function adjObs(key, side, zone, delta) { const p = S.obsPools[S.activeObsPool]; if (!p||!p.data[key]) return; p.data[key][side][zone] = Math.max(0, p.data[key][side][zone] + delta); save(); buildObsContent(); }
+function buildObsSummary(pool) {
+  const names = pool.pnames, n = pool.ps;
+  const totals = names.map(name => ({ name, c:0, d:0 }));
+  const pairs = getMatchups(n, names);
+  pairs.forEach((pair, pi) => { [1,2].forEach(sn => { const od = pool.data[`${pi}_${sn}`]; if (!od) return; totals[pair.a].c+=od.a.c; totals[pair.a].d+=od.a.d; totals[pair.b].c+=od.b.c; totals[pair.b].d+=od.b.d; }); });
+  return `<div class="card"><div class="ct">📊 Bilan ${pool.name}</div>
+    <table><thead><tr><th>Joueur</th><th>Zone cent.</th><th>Zones dang.</th><th>Total</th><th>% ZD</th></tr></thead>
+    <tbody>${totals.map(t => { const tot=t.c+t.d, r=tot>0?Math.round(t.d/tot*100):0; return `<tr><td class="fw7">${t.name}</td><td>${t.c}</td><td class="tr fw7">${t.d}</td><td>${tot}</td><td><span class="fh" style="font-size:18px;color:${r>=50?'var(--gr)':'var(--re)'}">${r}%</span></td></tr>`; }).join('')}</tbody></table>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// ATP TOURNOI — Full system from Excel résultats sheet
+// ══════════════════════════════════════════════════════════
+function newATPTable(name) {
+  return { id: uid(), name: name||'Tableau A', players: [], matches: [], session: 1 };
+}
+function renderATP() {
+  if (!S.atpTables.length) { S.atpTables.push(newATPTable('Tableau A')); }
+  document.getElementById('atp-stabs').innerHTML = S.atpTables.map((t,i) => `<button class="stb${S.activeATP===i?' active':''}" onclick="switchATP(${i})">${t.name}</button>`).join('');
+  buildATPContent();
+}
+function addATPTable() { S.atpTables.push(newATPTable('Tableau ' + String.fromCharCode(65 + S.atpTables.length))); S.activeATP = S.atpTables.length - 1; save(); renderATP(); }
+function switchATP(i) { S.activeATP = i; save(); renderATP(); }
+
+function buildATPContent() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  const ranked = getRanked(tbl);
+  const playerSelects = `<datalist id="atp-dl">${ranked.map(p=>`<option value="${p.nom}${p.prenom?' '+p.prenom:''}">`).join('')}</datalist>`;
+
+  const rankTable = ranked.length ? `<table>
+    <thead><tr><th>Rang</th><th>Cl.S</th><th>Joueur</th><th title="Points totaux">Pts</th><th title="Points séance">Pts/Séance</th><th>Matchs</th><th>Arb.</th><th>GA</th></tr></thead>
+    <tbody>${ranked.map((p,i) => `<tr>
+      <td class="atp-rank" style="color:${i<3?'var(--ac)':'var(--mu)'}">${i+1}</td>
+      <td class="mu tac" style="font-size:11px">${p.prevRank||'—'}</td>
+      <td><span class="fw7">${p.nom}</span>${p.prenom?` <span class="mu">${p.prenom}</span>`:''}</td>
+      <td class="atp-pts">${p.pts||0}</td>
+      <td class="tac" style="font-size:13px;color:var(--gr)">${p.sessionPts||0}</td>
+      <td class="tac mu">${p.matchesPlayed||0}</td>
+      <td class="tac" style="color:var(--bl)">${p.matchesArb||0}</td>
+      <td class="tac mu" style="font-size:12px">${(p.ptsFor||0)-(p.ptsAgainst||0)}</td>
+    </tr>`).join('')}</tbody>
+  </table>` : '<div class="mu" style="font-size:12px">Aucun joueur — ajoutez des joueurs ci-dessous.</div>';
+
+  const lastMatches = (tbl.matches||[]).slice(-5).reverse().map(m => {
+    const w = tbl.players.find(p=>p.id===m.winnerId)||{}, l = tbl.players.find(p=>p.id===(m.winnerId===m.p1Id?m.p2Id:m.p1Id))||{}, arb = tbl.players.find(p=>p.id===m.arbId)||{};
+    return `<div class="match-hist-row"><span class="session-badge">S${m.session}</span><span class="tg fw7">${w.nom||'?'}</span><span class="hist-score">${m.p1Score}—${m.p2Score}</span><span class="tr">${l.nom||'?'}</span>${arb.nom?`<span class="mu" style="font-size:11px">Arb:${arb.nom}</span>`:''}</div>`;
+  }).join('') || '<div class="mu" style="font-size:12px">Aucun match</div>';
+
+  document.getElementById('atp-content').innerHTML = `<div style="display:grid;grid-template-columns:1fr 340px;gap:12px">
+    <div>
+      <div class="card">
+        <div class="ct f jb ic">${tbl.name} — Séance ${tbl.session}
+          <div class="f g6"><button class="btn bg bsm" onclick="atpNewSession()">📅 Nouvelle séance</button><button class="btn bd bsm" onclick="rmATPTable()">✕</button></div>
+        </div>
+        ${rankTable}
+      </div>
+      <div class="card"><div class="ct">📜 Historique des matchs</div>
+        <div class="f g6 mb8">
+          <button class="btn bg bsm" onclick="showFullHistory()">📋 Voir tout</button>
+          <button class="btn bg bsm" onclick="exportATPHistory()">⬇️ Export CSV</button>
+        </div>
+        ${lastMatches}
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="ct">➕ Ajouter joueur</div>
+        <div class="f g6 mb8">
+          <input id="atp-add-nom" placeholder="Nom" style="flex:1" list="stu-dl-atp">
+          <button class="btn bp bsm" onclick="addATPPlayer()">+</button>
+        </div>
+        <datalist id="stu-dl-atp">${S.students.map(s=>`<option value="${s.nom}${s.prenom?' '+s.prenom:''}">`).join('')}</datalist>
+        <button class="btn bg bsm w100 mb8" onclick="importAllToATP()">Importer tous les élèves</button>
+        <button class="btn bgr bsm w100 mb4" onclick="resetATPScores()">🔄 Reset scores (garder joueurs)</button>
+        <button class="btn bd bsm w100" onclick="clearATPPlayers()">🗑️ Vider tout (joueurs + matchs)</button>
+      </div>
+      <div class="card">
+        <div class="ct">🏸 Saisir un match</div>
+        <div class="label-sm mb4">Barème de points</div>
+        <div class="mu mb8" style="font-size:11px">Gagner vs +haut classé: 4→6pts | vs ≤même rang: 2→4pts | Perdant: 1pt | Arbitre: 1pt</div>
+        <div class="label-sm mb4">Joueur 1</div>
+        <div class="f g6 mb8">
+          <input id="m-p1" placeholder="Joueur 1" style="flex:1" list="atp-dl2">
+          <input id="m-p1s" placeholder="Pts" style="width:50px;text-align:center">
+        </div>
+        <div class="label-sm mb4">Joueur 2</div>
+        <div class="f g6 mb8">
+          <input id="m-p2" placeholder="Joueur 2" style="flex:1" list="atp-dl2">
+          <input id="m-p2s" placeholder="Pts" style="width:50px;text-align:center">
+        </div>
+        <div class="label-sm mb4">Arbitre</div>
+        <div class="f g6 mb8">
+          <input id="m-arb" placeholder="Arbitre (optionnel)" style="flex:1" list="atp-dl2">
+        </div>
+        <datalist id="atp-dl2">${ranked.map(p=>`<option value="${p.nom}${p.prenom?' '+p.prenom:''}">`).join('')}</datalist>
+        <button class="btn bp w100" onclick="recordATPMatch()">✅ Valider le match</button>
+      </div>
+      <div class="card">
+        <div class="ct">ℹ️ Barème ATP</div>
+        <table style="font-size:11px">
+          <thead><tr><th>Écart de rang</th><th>Pts gagnant</th></tr></thead>
+          <tbody>
+            <tr><td>+5 rangs au-dessus</td><td class="ta fw7">6</td></tr>
+            <tr><td>+2 à +4 au-dessus</td><td class="ta fw7">5</td></tr>
+            <tr><td>+1 rang au-dessus</td><td class="ta fw7">4</td></tr>
+            <tr><td>Même rang / 1 en dessous</td><td class="ta fw7">4</td></tr>
+            <tr><td>2 à 4 en dessous</td><td class="ta fw7">3</td></tr>
+            <tr><td>5+ rangs en dessous</td><td class="ta fw7">2</td></tr>
+            <tr><td class="mu">Perdant</td><td class="mu">1</td></tr>
+            <tr><td class="tbl">Arbitre</td><td class="tbl">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function getRanked(tbl) { return [...(tbl.players||[])].sort((a,b) => (b.pts||0)-(a.pts||0) || ((b.ptsFor||0)-(b.ptsAgainst||0))-((a.ptsFor||0)-(a.ptsAgainst||0)) || (b.matchesPlayed||0)-(a.matchesPlayed||0)); }
+
+function calcWinPts(winnerRank, loserRank) {
+  const diff = winnerRank - loserRank;
+  if (diff >= 5) return 6; if (diff >= 2) return 5; if (diff >= -1) return 4; if (diff >= -4) return 3; return 2;
+}
+
+function findPlayerByInput(tbl, val) {
+  val = val.trim().toLowerCase();
+  return tbl.players.find(p => (p.nom + (p.prenom?' '+p.prenom:'')).toLowerCase() === val || p.nom.toLowerCase() === val);
+}
+
+function addATPPlayer() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  const raw = document.getElementById('atp-add-nom').value.trim();
+  if (!raw) return;
+  const parts = raw.split(' ');
+  const nom = parts[0].toUpperCase(), prenom = parts.slice(1).join(' ');
+  if (tbl.players.some(p => p.nom === nom && (p.prenom||'') === prenom)) { toast('⚠️ Déjà présent'); return; }
+  tbl.players.push({ id: uid(), nom, prenom, pts: 0, matchesPlayed: 0, matchesArb: 0, sessionPts: 0, ptsFor: 0, ptsAgainst: 0, prevRank: '—' });
+  document.getElementById('atp-add-nom').value = '';
+  save(); buildATPContent();
+}
+
+function importAllToATP() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  let count = 0;
+  S.students.forEach(s => {
+    if (!tbl.players.some(p => p.nom === s.nom)) {
+      tbl.players.push({ id: uid(), nom: s.nom, prenom: s.prenom||'', pts: 0, matchesPlayed: 0, matchesArb: 0, sessionPts: 0, ptsFor: 0, ptsAgainst: 0, prevRank: '—' });
+      count++;
+    }
+  });
+  save(); buildATPContent(); toast(`✓ ${count} joueur(s) importé(s)`);
+}
+
+function clearATPPlayers() { if (confirm('Vider tous les joueurs et matchs de ce tableau ?')) { S.atpTables[S.activeATP].players = []; S.atpTables[S.activeATP].matches = []; save(); buildATPContent(); toast('✓ Tableau vidé'); } }
+
+function resetATPScores() {
+  if (!confirm('Remettre à zéro tous les scores et matchs, en gardant la liste des joueurs ?')) return;
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  tbl.players.forEach(p => {
+    p.pts = 0; p.sessionPts = 0; p.matchesPlayed = 0; p.matchesArb = 0;
+    p.ptsFor = 0; p.ptsAgainst = 0; p.prevRank = '—';
+  });
+  tbl.matches = []; tbl.session = 1;
+  save(); buildATPContent(); toast('🔄 Scores remis à zéro — joueurs conservés');
+}
+
+function recordATPMatch() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  const p1v = document.getElementById('m-p1').value.trim();
+  const p2v = document.getElementById('m-p2').value.trim();
+  const arbv = document.getElementById('m-arb').value.trim();
+  const p1s = parseInt(document.getElementById('m-p1s').value) || 0;
+  const p2s = parseInt(document.getElementById('m-p2s').value) || 0;
+  if (!p1v || !p2v || p1v === p2v) { toast('⚠️ Sélectionnez 2 joueurs différents'); return; }
+  if (p1s === 0 && p2s === 0) { toast('⚠️ Entrez les scores'); return; }
+  const p1 = findPlayerByInput(tbl, p1v), p2 = findPlayerByInput(tbl, p2v);
+  if (!p1 || !p2) { toast('⚠️ Joueur(s) introuvable(s)'); return; }
+
+  const ranked = getRanked(tbl);
+  const r1 = ranked.findIndex(p => p.id === p1.id) + 1;
+  const r2 = ranked.findIndex(p => p.id === p2.id) + 1;
+  const p1wins = p1s > p2s;
+  const winnerRank = p1wins ? r1 : r2, loserRank = p1wins ? r2 : r1;
+  const winPts = calcWinPts(winnerRank, loserRank);
+  const [winner, loser] = p1wins ? [p1, p2] : [p2, p1];
+
+  winner.pts += winPts; winner.sessionPts = (winner.sessionPts||0) + winPts; winner.matchesPlayed++; winner.ptsFor = (winner.ptsFor||0) + Math.max(p1s,p2s); winner.ptsAgainst = (winner.ptsAgainst||0) + Math.min(p1s,p2s);
+  loser.pts += 1; loser.sessionPts = (loser.sessionPts||0) + 1; loser.matchesPlayed++; loser.ptsFor = (loser.ptsFor||0) + Math.min(p1s,p2s); loser.ptsAgainst = (loser.ptsAgainst||0) + Math.max(p1s,p2s);
+
+  const arb = arbv ? findPlayerByInput(tbl, arbv) : null;
+  if (arb) { arb.pts += 1; arb.sessionPts = (arb.sessionPts||0) + 1; arb.matchesArb = (arb.matchesArb||0) + 1; }
+
+  tbl.matches.push({ id: uid(), session: tbl.session, date: new Date().toLocaleDateString('fr'), p1Id: p1.id, p2Id: p2.id, arbId: arb?.id||null, p1Score: p1s, p2Score: p2s, winnerId: winner.id, winPts });
+  ['m-p1','m-p2','m-arb','m-p1s','m-p2s'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  save(); buildATPContent();
+  toast(`🏆 ${winner.nom} +${winPts}pts | ${loser.nom} +1pt`);
+}
+
+function atpNewSession() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  const ranked = getRanked(tbl);
+  ranked.forEach((p,i) => { p.prevRank = i+1; p.sessionPts = 0; });
+  tbl.session++;
+  save(); buildATPContent(); toast(`✓ Séance ${tbl.session} démarrée`);
+}
+
+function rmATPTable() { if (S.atpTables.length <= 1) { toast('⚠️ Au moins un tableau requis'); return; } if (confirm('Supprimer ce tableau ATP ?')) { S.atpTables.splice(S.activeATP, 1); S.activeATP = Math.max(0, S.activeATP - 1); save(); renderATP(); } }
+
+function showFullHistory() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl) return;
+  const matches = [...(tbl.matches||[])].reverse();
+  if (!matches.length) { toast('Aucun match enregistré'); return; }
+  const win = window.open('', '_blank');
+  win.document.write(`<html><head><title>Historique ${tbl.name}</title><style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th{background:#111827;color:#f6c90e;padding:8px}td{padding:7px;border-bottom:1px solid #333}</style></head><body>
+    <h2>🏸 Historique ATP — ${tbl.name}</h2>
+    <table><thead><tr><th>Séance</th><th>Date</th><th>Joueur 1</th><th>Score</th><th>Joueur 2</th><th>Arbitre</th><th>Pts J1</th><th>Pts J2</th></tr></thead>
+    <tbody>${matches.map(m => { const p1=tbl.players.find(p=>p.id===m.p1Id)||{}, p2=tbl.players.find(p=>p.id===m.p2Id)||{}, arb=tbl.players.find(p=>p.id===m.arbId)||{}; return `<tr><td>S${m.session}</td><td>${m.date}</td><td>${p1.nom||'?'}${m.winnerId===m.p1Id?' 🏆':''}</td><td style="text-align:center;font-weight:700">${m.p1Score}—${m.p2Score}</td><td>${p2.nom||'?'}${m.winnerId===m.p2Id?' 🏆':''}</td><td>${arb.nom||'—'}</td><td>${m.winnerId===m.p1Id?m.winPts:1}</td><td>${m.winnerId===m.p2Id?m.winPts:1}</td></tr>`; }).join('')}</tbody></table></body></html>`);
+}
+
+function exportATPHistory() {
+  const tbl = S.atpTables[S.activeATP]; if (!tbl || !tbl.matches?.length) { toast('Aucun match'); return; }
+  const rows = ['Séance;Date;Joueur1;Score;Joueur2;Arbitre;PtsJ1;PtsJ2;Gagnant'];
+  tbl.matches.forEach(m => {
+    const p1=tbl.players.find(p=>p.id===m.p1Id)||{}, p2=tbl.players.find(p=>p.id===m.p2Id)||{}, arb=tbl.players.find(p=>p.id===m.arbId)||{};
+    rows.push(`S${m.session};${m.date};${p1.nom||'?'};${m.p1Score}-${m.p2Score};${p2.nom||'?'};${arb.nom||'—'};${m.winnerId===m.p1Id?m.winPts:1};${m.winnerId===m.p2Id?m.winPts:1};${m.winnerId===m.p1Id?p1.nom:p2.nom}`);
+  });
+  const a = document.createElement('a'); a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(rows.join('\n')); a.download = `ATP_${tbl.name}_historique.csv`; a.click();
+}
+
+// ══════════════════════════════════════════════════════════
+// BARÈME BAC GT
+// ══════════════════════════════════════════════════════════
+function getGenScore(deg, gain, type) {
+  const tables = {
+    afl1a: [{min:0,mid:1,max:2.5},{min:2,mid:3,max:4.5},{min:4,mid:5.5,max:6.5},{min:6,mid:7,max:8}],
+    afl1b: [{min:0,mid:0.5,max:1},{min:1.5,mid:2,max:2.5},{min:2,mid:2.75,max:3.5},{min:3,mid:3.5,max:4}]
+  };
+  const d = tables[type][deg-1]; if (!d) return 0;
+  return gain==='-50'?d.min:gain==='+50'?d.max:d.mid;
+}
+function getAFLScore(deg, pts, gain) {
+  const tbl = { 2:[[0,.25,.5],[.75,.875,1],[1.25,1.375,1.5],[1.75,1.875,2]], 4:[[0,.5,1],[1.25,1.625,2],[2.25,2.625,3],[3.25,3.625,4]], 6:[[0,.75,1.5],[1.75,2.125,2.5],[2.75,3.375,4],[4.25,5.125,6]] };
+  const row = (tbl[pts]||tbl[4])[deg-1]||[0,0,0];
+  return row[gain==='low'?0:gain==='high'?2:1];
+}
+function renderBacGen() {
+  refreshPickers();
+  const list = document.getElementById('bacgen-list');
+  if (!S.bacGen.length) { list.innerHTML = '<div class="es"><div class="es-icon">🎓</div><div>Ajoutez des élèves via le menu ci-dessus</div></div>'; return; }
+  list.innerHTML = S.bacGen.map((e,i) => renderBacGenRow(e,i)).join('');
+}
+function renderBacGenRow(e, i) {
+  const a1a = +getGenScore(e.d1a||1,e.g1a||'50','afl1a').toFixed(2);
+  const a1b = +getGenScore(e.d1b||1,e.g1b||'50','afl1b').toFixed(2);
+  const afl1 = +(a1a+a1b).toFixed(2);
+  const split = e.split||'4-4'; const [p2,p3] = split.split('-').map(Number);
+  const afl2 = +getAFLScore(e.d2||1,p2,e.g2||'mid').toFixed(2);
+  const afl3 = +getAFLScore(e.d3||1,p3,e.g3||'mid').toFixed(2);
+  const total = +(afl1+afl2+afl3).toFixed(2);
+  const gr = total>=16?'A':total>=12?'B':total>=8?'C':'D';
+  return `<div class="bac-row">
+    <div class="f jb ic mb8 fw">
+      <input value="${e.nom||''}" placeholder="Élève" style="width:180px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px" oninput="S.bacGen[${i}].nom=this.value;save()">
+      <div class="f g8 ic">
+        <div class="subscore"><div class="sv">${total}</div><div class="sl">/20</div></div>
+        <div class="subscore"><div class="sv">${afl1}</div><div class="sl">AFL1/12</div></div>
+        <div class="subscore"><div class="sv">${afl2}</div><div class="sl">AFL2/${p2}</div></div>
+        <div class="subscore"><div class="sv">${afl3}</div><div class="sl">AFL3/${p3}</div></div>
+        <div class="score-big s${gr}" style="font-size:34px">${total}</div>
+        <button class="btn bd bsm" onclick="rmBacGen(${i})">✕</button>
+      </div>
+    </div>
+    <div class="f fw g12">
+      <div style="flex:1;min-width:180px">
+        <div class="label-sm">AFL1-a: Technique (8pts) <span class="ta">${a1a}/8</span></div>
+        <div class="deg-sel mb8">${[1,2,3,4].map(d=>`<button class="dg-btn${e.d1a===d?' sel':''}" onclick="S.bacGen[${i}].d1a=${d};save();renderBacGen()">D${d}</button>`).join('')}</div>
+        <div class="label-sm">Gain des sets</div>
+        <div class="gain-sel">${['-50','50','+50'].map(g=>`<button class="gn-btn${e.g1a===g?' sel':''}" onclick="S.bacGen[${i}].g1a='${g}';save();renderBacGen()">${g}%</button>`).join('')}</div>
+      </div>
+      <div style="flex:1;min-width:180px">
+        <div class="label-sm">AFL1-b: Tactique (4pts) <span class="ta">${a1b}/4</span></div>
+        <div class="deg-sel mb8">${[1,2,3,4].map(d=>`<button class="dg-btn${e.d1b===d?' sel':''}" onclick="S.bacGen[${i}].d1b=${d};save();renderBacGen()">D${d}</button>`).join('')}</div>
+        <div class="label-sm">Gain des matchs</div>
+        <div class="gain-sel">${['-50','50','+50'].map(g=>`<button class="gn-btn${e.g1b===g?' sel':''}" onclick="S.bacGen[${i}].g1b='${g}';save();renderBacGen()">${g}%</button>`).join('')}</div>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <div class="label-sm">AFL2+AFL3 (8pts) — Répartition élève</div>
+        <div class="gain-sel mb8">${['2-6','4-4','6-2'].map(s=>`<button class="gn-btn${e.split===s?' sel':''}" onclick="S.bacGen[${i}].split='${s}';save();renderBacGen()">${s}</button>`).join('')}</div>
+        <div class="f g8">
+          <div style="flex:1">
+            <div class="label-sm">AFL2 (${p2}pts) <span class="ta">${afl2}</span></div>
+            <div class="deg-sel mb4">${[1,2,3,4].map(d=>`<button class="dg-btn bsm${e.d2===d?' sel':''}" onclick="S.bacGen[${i}].d2=${d};save();renderBacGen()">D${d}</button>`).join('')}</div>
+            <div class="gain-sel">${['low','mid','high'].map((g,gi)=>`<button class="gn-btn${e.g2===g?' sel':''}" onclick="S.bacGen[${i}].g2='${g}';save();renderBacGen()">${['Min','Moy','Max'][gi]}</button>`).join('')}</div>
+          </div>
+          <div style="flex:1">
+            <div class="label-sm">AFL3 (${p3}pts) <span class="ta">${afl3}</span></div>
+            <div class="deg-sel mb4">${[1,2,3,4].map(d=>`<button class="dg-btn bsm${e.d3===d?' sel':''}" onclick="S.bacGen[${i}].d3=${d};save();renderBacGen()">D${d}</button>`).join('')}</div>
+            <div class="gain-sel">${['low','mid','high'].map((g,gi)=>`<button class="gn-btn${e.g3===g?' sel':''}" onclick="S.bacGen[${i}].g3='${g}';save();renderBacGen()">${['Min','Moy','Max'][gi]}</button>`).join('')}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function addBacGenSelected() { const id = document.getElementById('bacgen-pick').value; const s = S.students.find(x=>x.id===id); const nom = s?s.nom:(document.getElementById('bacgen-pick').options[document.getElementById('bacgen-pick').selectedIndex]?.text||''); if (!nom||nom.includes('Sélectionner')) { toast('⚠️ Sélectionnez un élève'); return; } if (S.bacGen.some(e=>e.nom===nom)) { toast('⚠️ Déjà ajouté'); return; } S.bacGen.push({ nom, d1a:1, g1a:'50', d1b:1, g1b:'50', split:'4-4', d2:1, g2:'mid', d3:1, g3:'mid' }); save(); renderBacGen(); }
+function addBacGenAll() { let count=0; S.students.forEach(s=>{ if (!S.bacGen.some(e=>e.nom===s.nom)) { S.bacGen.push({ nom:s.nom, d1a:1, g1a:'50', d1b:1, g1b:'50', split:'4-4', d2:1, g2:'mid', d3:1, g3:'mid' }); count++; } }); save(); renderBacGen(); toast(`✓ ${count} élève(s) ajouté(s)`); }
+function rmBacGen(i) { S.bacGen.splice(i,1); save(); renderBacGen(); }
+
+// ══════════════════════════════════════════════════════════
+// BARÈME BAC PRO + AFLP3 ANNEXE 1
+// ══════════════════════════════════════════════════════════
+const AFLP1_SC = { 1:{'-50':.5,'50':1,'+50':1.5}, 2:{'-50':2,'50':2.5,'+50':3}, 3:{'-50':3.5,'50':4.25,'+50':5}, 4:{'-50':5.5,'50':6.25,'+50':7} };
+const AFLP2_SC = { 1:1, 2:2.5, 3:3.5, 4:5 };
+const AFLP2_LB = { 1:'Bronze', 2:'Argent', 3:'Or', 4:'Platine' };
+
+const EVO_TYPES = [
+  { id:1, label:'🟢 Gagne 2 sets, écart ↑ au 2ème', pts:4 },
+  { id:2, label:'🟩 Gagne 2 sets, écart ≤ au 1er', pts:3 },
+  { id:3, label:'🔄 Perd S1, gagne S2 (remontée)', pts:2 },
+  { id:4, label:'📉 Gagne S1, perd S2 (baisse)', pts:1.5 },
+  { id:5, label:'🟡 Perd 2 sets, réduit écart ≥2pts', pts:1 },
+  { id:6, label:'🔴 Perd 2 sets, sans progression', pts:0.5 }
+];
+
+function aflp3FromGain(gain, ps) {
+  if (ps === 4) {
+    if (gain>=11) return 4; if (gain>=9) return 3.5; if (gain>=8) return 3; if (gain>=6.5) return 2.5; if (gain>=5) return 2; if (gain>=3.5) return 1.5; if (gain>=2) return 1; if (gain>=1.5) return 0.5; return 0;
+  } else {
+    if (gain>=15) return 4; if (gain>=13.5) return 3.5; if (gain>=10.5) return 3; if (gain>=8.5) return 2.5; if (gain>=6.5) return 2; if (gain>=4.5) return 1.5; if (gain>=2.5) return 1; if (gain>=2) return 0.5; return 0;
+  }
+}
+function getAFLPScore(deg, pts, gain) {
+  const tbl = { 2:[[0,.25,.5],[.75,.875,1],[1.25,1.375,1.5],[1.75,1.875,2]], 4:[[0,.5,1],[1.25,1.625,2],[2.25,2.625,3],[3.25,3.625,4]], 6:[[0,.75,1.5],[1.75,2.125,2.5],[2.75,3.375,4],[4.25,5.125,6]] };
+  const row = (tbl[pts]||tbl[4])[deg-1]||[0,0,0];
+  return row[0]; // Just return min for base; actual selector uses deg directly
+}
+
+function renderBacPro() {
+  refreshPickers();
+  const list = document.getElementById('bacpro-list');
+  if (!S.bacPro.length) { list.innerHTML = '<div class="es"><div class="es-icon">🎓</div><div>Ajoutez des élèves via le menu ci-dessus</div></div>'; return; }
+  list.innerHTML = S.bacPro.map((e,i) => renderBacProRow(e,i)).join('');
+}
+
+function renderBacProRow(e, i) {
+  const aflp1 = +(AFLP1_SC[e.dp1||1]?.[e.gp1||'50']||0).toFixed(2);
+  const aflp2 = AFLP2_SC[e.dp2||1]||1;
+  const split = e.split||'4-4'; const [pA,pB] = split.split('-').map(Number);
+
+  // AFLP A and B (from {3,4,5,6})
+  const degTable = { 2:[[0,.5],[.75,1],[1.25,1.5],[1.75,2]], 4:[[0,1],[1.25,2],[2.25,3],[3.25,4]], 6:[[0,1.5],[1.75,2.5],[2.75,4],[4.25,6]] };
+  const getScore = (deg, pts) => { const r = (degTable[pts]||degTable[4])[deg-1]||[0,0]; return (r[0]+r[1])/2; };
+  const aflpA = +getScore(e.dpA||1, pA).toFixed(2);
+  const aflpB = +getScore(e.dpB||1, pB).toFixed(2);
+
+  // AFLP3 with Annexe 1
+  const ps3 = e.ps3||4;
+  const nMatches = ps3===4?3:4; // Pool4→3 matchups, Pool3&5→4 matchups
+  const evoTypes = e.evo||Array(nMatches).fill(0);
+  const totalGain = evoTypes.reduce((s,t) => s + (t>0 ? EVO_TYPES[t-1].pts : 0), 0);
+  const aflp3Score = aflp3FromGain(totalGain, ps3);
+
+  // If AFLP3 is selected as one of the AFL (A or B), override with annexe 1 score
+  const usesAFLP3 = e.useAflp3A || e.useAflp3B;
+  const finalA = e.useAflp3A ? aflp3Score * (pA/4) : aflpA; // scale to allocated pts
+  const finalB = e.useAflp3B ? aflp3Score * (pB/4) : aflpB;
+
+  const total = +(aflp1 + aflp2 + finalA + finalB).toFixed(2);
+  const gr = total>=16?'A':total>=12?'B':total>=8?'C':'D';
+
+  const evoHTML = Array.from({length:nMatches},(_,mi) => {
+    const sel = evoTypes[mi]||0;
+    return `<div class="mb4"><div class="mu mb4" style="font-size:11px">Rencontre ${mi+1}</div>
+      ${EVO_TYPES.map(ev => `<button class="ev-btn${sel===ev.id?' sel':''}" onclick="setEvo(${i},${mi},${ev.id})"><span class="ev-pts">${ev.pts}pts</span>${ev.label}</button>`).join('')}
+    </div>`;
+  }).join('');
+
+  return `<div class="bac-row">
+    <div class="f jb ic mb8 fw">
+      <input value="${e.nom||''}" placeholder="Élève" style="width:180px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px" oninput="S.bacPro[${i}].nom=this.value;save()">
+      <div class="f g8 ic fw">
+        <div class="subscore"><div class="sv">${total}</div><div class="sl">/20</div></div>
+        <div class="subscore"><div class="sv">${aflp1}</div><div class="sl">AFLP1/7</div></div>
+        <div class="subscore"><div class="sv">${aflp2}</div><div class="sl">AFLP2/5</div></div>
+        <div class="subscore"><div class="sv">${finalA.toFixed(2)}</div><div class="sl">AFLP-A/${pA}</div></div>
+        <div class="subscore"><div class="sv">${finalB.toFixed(2)}</div><div class="sl">AFLP-B/${pB}</div></div>
+        <div class="score-big s${gr}" style="font-size:34px">${total}</div>
+        <button class="btn bd bsm" onclick="rmBacPro(${i})">✕</button>
+      </div>
+    </div>
+    <div class="f fw g12">
+      <!-- AFLP1 -->
+      <div style="flex:1;min-width:180px">
+        <div class="label-sm">AFLP1: Tactique/Stratégie (7pts) <span class="ta">${aflp1}/7</span></div>
+        <div class="deg-sel mb8">${[1,2,3,4].map(d=>`<button class="dg-btn${e.dp1===d?' sel':''}" onclick="S.bacPro[${i}].dp1=${d};save();renderBacPro()"><span style="font-size:10px">${['Renvoyeur','Repousseur','Cibleur','Tacticien'][d-1]}</span><br>D${d}</button>`).join('')}</div>
+        <div class="label-sm">Gain des sets</div>
+        <div class="gain-sel">${['-50','50','+50'].map(g=>`<button class="gn-btn${e.gp1===g?' sel':''}" onclick="S.bacPro[${i}].gp1='${g}';save();renderBacPro()">${g}%</button>`).join('')}</div>
+        <div class="mt8 mu" style="font-size:10px">D1:0.5-1.5pts · D2:2-3pts · D3:3.5-5pts · D4:5.5-7pts</div>
+      </div>
+      <!-- AFLP2 -->
+      <div style="flex:1;min-width:180px">
+        <div class="label-sm">AFLP2: Technique (5pts) <span class="ta">${aflp2}/5</span></div>
+        <div class="deg-sel">${[1,2,3,4].map(d=>`<button class="dg-btn${e.dp2===d?' sel':''}" onclick="S.bacPro[${i}].dp2=${d};save();renderBacPro()">${AFLP2_LB[d]}<br><span style="font-size:10px">${AFLP2_SC[d]}pts</span></button>`).join('')}</div>
+        <div class="mt8 mu" style="font-size:10px">Bronze=1 · Argent=2.5 · Or=3.5 · Platine=5</div>
+      </div>
+      <!-- 2 AFLP split -->
+      <div style="flex:1;min-width:200px">
+        <div class="label-sm">2 AFLP au choix (8pts) — Répartition élève</div>
+        <div class="gain-sel mb8">${['2-6','4-4','6-2'].map(s=>`<button class="gn-btn${e.split===s?' sel':''}" onclick="S.bacPro[${i}].split='${s}';save();renderBacPro()">${s}</button>`).join('')}</div>
+        <div class="f g8">
+          <div style="flex:1">
+            <div class="label-sm">AFLP A (${pA}pts) <span class="ta">${finalA.toFixed(2)}</span></div>
+            <div class="mb4"><label style="font-size:11px;cursor:pointer"><input type="checkbox" ${e.useAflp3A?'checked':''} onchange="S.bacPro[${i}].useAflp3A=this.checked;save();renderBacPro()"> Utiliser AFLP3 (Annexe 1)</label></div>
+            ${!e.useAflp3A ? `<div class="deg-sel">${[1,2,3,4].map(d=>`<button class="dg-btn bsm${e.dpA===d?' sel':''}" onclick="S.bacPro[${i}].dpA=${d};save();renderBacPro()">D${d}</button>`).join('')}</div>` : ''}
+          </div>
+          <div style="flex:1">
+            <div class="label-sm">AFLP B (${pB}pts) <span class="ta">${finalB.toFixed(2)}</span></div>
+            <div class="mb4"><label style="font-size:11px;cursor:pointer"><input type="checkbox" ${e.useAflp3B?'checked':''} onchange="S.bacPro[${i}].useAflp3B=this.checked;save();renderBacPro()"> Utiliser AFLP3 (Annexe 1)</label></div>
+            ${!e.useAflp3B ? `<div class="deg-sel">${[1,2,3,4].map(d=>`<button class="dg-btn bsm${e.dpB===d?' sel':''}" onclick="S.bacPro[${i}].dpB=${d};save();renderBacPro()">D${d}</button>`).join('')}</div>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- AFLP3 ANNEXE 1 -->
+    <details style="margin-top:10px">
+      <summary style="cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;color:var(--ac);user-select:none">📋 AFLP3 — Annexe 1 (Gain des sets → Score)
+        <span class="tag ml8" style="margin-left:8px">Gain total: ${totalGain}pts → AFLP3: ${aflp3Score}/4</span>
+      </summary>
+      <div style="margin-top:10px;background:var(--s2);border-radius:8px;padding:12px">
+        <div class="f g8 ic mb8">
+          <div class="label-sm" style="margin:0">Taille de la poule :</div>
+          ${[3,4,5].map(x=>`<button class="gn-btn${ps3===x?' sel':''}" onclick="S.bacPro[${i}].ps3=${x};save();renderBacPro()">${x}j</button>`).join('')}
+          <span class="mu" style="font-size:11px">(${nMatches} rencontres à évaluer)</span>
+        </div>
+        <div class="g2">
+          <div>
+            <div class="label-sm mb8">Évolution par rencontre</div>
+            ${evoHTML}
+          </div>
+          <div>
+            <div class="label-sm mb8">Barème Annexe 1 — Table résultat</div>
+            <div class="f g8 ic mb8">
+              <div class="subscore"><div class="sv">${totalGain}</div><div class="sl">Gain total</div></div>
+              <div style="font-size:20px">→</div>
+              <div class="subscore"><div class="sv" style="color:var(--gr)">${aflp3Score}/4</div><div class="sl">AFLP3</div></div>
+            </div>
+            ${ps3===4 ? `<table style="font-size:11px"><thead><tr><th>Gain des rencontres</th><th>AFLP3</th><th>Niveau</th></tr></thead><tbody>
+              <tr><td>11-12pts</td><td class="ta fw7">4</td><td class="tg">Très Bonne Maîtrise</td></tr>
+              <tr><td>9-10pts</td><td class="ta fw7">3.5</td><td class="tg">Très Bonne Maîtrise</td></tr>
+              <tr><td>8-8.5pts</td><td class="ta fw7">3</td><td class="tbl">Maîtrise Satisfaisante</td></tr>
+              <tr><td>6.5-7.5pts</td><td class="ta fw7">2.5</td><td class="tbl">Maîtrise Satisfaisante</td></tr>
+              <tr><td>5-6pts</td><td class="ta fw7">2</td><td class="ta">Maîtrise Fragile</td></tr>
+              <tr><td>3.5-4.5pts</td><td class="ta fw7">1.5</td><td class="ta">Maîtrise Fragile</td></tr>
+              <tr><td>2-3pts</td><td class="ta fw7">1</td><td class="tr">Insuffisante</td></tr>
+              <tr><td>1.5pt</td><td class="ta fw7">0.5</td><td class="tr">Insuffisante</td></tr>
+              <tr><td>&lt;1.5pt</td><td class="ta fw7">0</td><td class="tr">Insuffisante</td></tr>
+            </tbody></table>` : `<table style="font-size:11px"><thead><tr><th>Gain des rencontres</th><th>AFLP3</th><th>Niveau</th></tr></thead><tbody>
+              <tr><td>15-16pts</td><td class="ta fw7">4</td><td class="tg">Très Bonne Maîtrise</td></tr>
+              <tr><td>13.5-14.5pts</td><td class="ta fw7">3.5</td><td class="tg">Très Bonne Maîtrise</td></tr>
+              <tr><td>10.5-13pts</td><td class="ta fw7">3</td><td class="tbl">Maîtrise Satisfaisante</td></tr>
+              <tr><td>8.5-10pts</td><td class="ta fw7">2.5</td><td class="tbl">Maîtrise Satisfaisante</td></tr>
+              <tr><td>6.5-8pts</td><td class="ta fw7">2</td><td class="ta">Maîtrise Fragile</td></tr>
+              <tr><td>4.5-6pts</td><td class="ta fw7">1.5</td><td class="ta">Maîtrise Fragile</td></tr>
+              <tr><td>2.5-4pts</td><td class="ta fw7">1</td><td class="tr">Insuffisante</td></tr>
+              <tr><td>2pts</td><td class="ta fw7">0.5</td><td class="tr">Insuffisante</td></tr>
+              <tr><td>&lt;2pts</td><td class="ta fw7">0</td><td class="tr">Insuffisante</td></tr>
+            </tbody></table>`}
+            <div class="sep"></div>
+            <div class="label-sm mb8">Table 1 — Points par rencontre</div>
+            <table style="font-size:11px"><thead><tr><th>Évolution</th><th>Pts</th></tr></thead><tbody>
+              ${EVO_TYPES.map(ev=>`<tr><td>${ev.label}</td><td class="ta fw7">${ev.pts}</td></tr>`).join('')}
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>`;
+}
+
+function setEvo(i, mi, evId) {
+  if (!S.bacPro[i].evo) S.bacPro[i].evo = [];
+  while (S.bacPro[i].evo.length <= mi) S.bacPro[i].evo.push(0);
+  S.bacPro[i].evo[mi] = evId;
+  save(); renderBacPro();
+}
+function addBacProSelected() { const id = document.getElementById('bacpro-pick').value; const s = S.students.find(x=>x.id===id); const nom = s?s.nom:(document.getElementById('bacpro-pick').options[document.getElementById('bacpro-pick').selectedIndex]?.text||''); if (!nom||nom.includes('Sélectionner')) { toast('⚠️ Sélectionnez un élève'); return; } if (S.bacPro.some(e=>e.nom===nom)) { toast('⚠️ Déjà ajouté'); return; } S.bacPro.push({ nom, dp1:1, gp1:'50', dp2:1, split:'4-4', dpA:1, dpB:1, ps3:4, evo:[], useAflp3A:false, useAflp3B:false }); save(); renderBacPro(); }
+function addBacProAll() { let count=0; S.students.forEach(s=>{ if (!S.bacPro.some(e=>e.nom===s.nom)) { S.bacPro.push({ nom:s.nom, dp1:1, gp1:'50', dp2:1, split:'4-4', dpA:1, dpB:1, ps3:4, evo:[], useAflp3A:false, useAflp3B:false }); count++; } }); save(); renderBacPro(); toast(`✓ ${count} élève(s)`); }
+function rmBacPro(i) { S.bacPro.splice(i,1); save(); renderBacPro(); }
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+if (!S.matchSheets) S.matchSheets = [];
+if (!S.obsPools) S.obsPools = [];
+if (!S.atpTables) S.atpTables = [];
+if (!S.bacGen) S.bacGen = [];
+if (!S.bacPro) S.bacPro = [];
+if (typeof S.activeSheet !== 'number') S.activeSheet = 0;
+if (typeof S.activeObsPool !== 'number') S.activeObsPool = 0;
+if (typeof S.activeATP !== 'number') S.activeATP = 0;
+renderStudents();
+
+// ══════════════════════════════════════════════════════════
+// SPLASH PAGE
+// ══════════════════════════════════════════════════════════
+(function initSplash() {
+  // Draw court background
+  const canvas = document.getElementById('court-canvas');
+  function drawCourt() {
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+    const w = canvas.width, h = canvas.height;
+    const cx = w/2, cy = h/2;
+    const cw = Math.min(w*.65, 480), ch = Math.min(h*.82, 680);
+    ctx.strokeStyle = 'rgba(246,201,14,1)'; ctx.lineWidth = 1.2;
+    // Outer court
+    ctx.strokeRect(cx-cw/2, cy-ch/2, cw, ch);
+    // Center line (net)
+    ctx.save(); ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(cx-cw/2, cy); ctx.lineTo(cx+cw/2, cy); ctx.stroke();
+    ctx.restore();
+    // Short service lines
+    const ssl = ch*.133;
+    [[cy-ch/2+ssl, cx-cw/2, cx+cw/2],[cy+ch/2-ssl, cx-cw/2, cx+cw/2]].forEach(([y,x1,x2]) => {
+      ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2,y); ctx.stroke();
+    });
+    // Long service (doubles)
+    const lsl = ch*.065;
+    [[cy-ch/2+lsl, cx-cw/2, cx+cw/2],[cy+ch/2-lsl, cx-cw/2, cx+cw/2]].forEach(([y,x1,x2]) => {
+      ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2,y); ctx.stroke();
+    });
+    // Center service lines
+    ctx.beginPath(); ctx.moveTo(cx, cy-ch/2+ssl); ctx.lineTo(cx, cy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy+ch/2-ssl); ctx.stroke();
+    // Side tramlines
+    const tram = cw*.08;
+    ctx.save(); ctx.setLineDash([3,4]);
+    [[cx-cw/2+tram],[cx+cw/2-tram]].forEach(([x]) => {
+      ctx.beginPath(); ctx.moveTo(x, cy-ch/2); ctx.lineTo(x, cy+ch/2); ctx.stroke();
+    });
+    ctx.restore();
+    // Glow at net
+    const grad = ctx.createLinearGradient(cx-cw/2, cy, cx+cw/2, cy);
+    grad.addColorStop(0,'rgba(246,201,14,0)'); grad.addColorStop(.5,'rgba(246,201,14,.35)'); grad.addColorStop(1,'rgba(246,201,14,0)');
+    ctx.strokeStyle = grad; ctx.lineWidth = 3;
+    ctx.save(); ctx.setLineDash([]); ctx.beginPath(); ctx.moveTo(cx-cw/2, cy); ctx.lineTo(cx+cw/2, cy); ctx.stroke(); ctx.restore();
+  }
+  drawCourt();
+  window.addEventListener('resize', drawCourt);
+
+  // Floating particles
+  const ptc = document.getElementById('ptc');
+  const chars = ['🏸','◆','★','•','◇','·'];
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    const size = Math.random() * 14 + 8;
+    const dur = Math.random() * 14 + 10;
+    const delay = Math.random() * 14;
+    el.className = 'ptc-item';
+    el.textContent = chars[Math.floor(Math.random() * chars.length)];
+    el.style.cssText = `left:${Math.random()*100}%;font-size:${size}px;animation-duration:${dur}s;animation-delay:-${delay}s;opacity:.25`;
+    ptc.appendChild(el);
+  }
+
+  // Auto-focus input
+  setTimeout(() => { document.getElementById('spl-pwd')?.focus(); }, 300);
+})();
+
+async function checkPwd() {
+  const input = document.getElementById('spl-pwd');
+  const val = input ? input.value : '';
+  if (!val) return;
+
+  // SHA-256 hash comparison — password never stored in plain text
+  try {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode(val));
+    const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    // Hash stored as split segments — cannot be reverse-engineered
+    const _s = ['263f9d61','413b8282','924b62d1','fb5bfe17','5fc1d41a','1a027ce0','67acd557','0621267e'];
+    const ok = hex === _s.reduce((a,b) => a+b, '');
+    if (ok) {
+      const lock = document.getElementById('spl-lock');
+      if (lock) { lock.textContent = '🔓'; lock.classList.add('open'); }
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        if (splash) { splash.classList.add('out'); setTimeout(() => { splash.style.display = 'none'; }, 750); }
+      }, 350);
+    } else {
+      _splashError();
+    }
+  } catch(e) {
+    // Fallback if SubtleCrypto unavailable (non-HTTPS)
+    _splashError();
+  }
+}
+
+function _splashError() {
+  const input = document.getElementById('spl-pwd');
+  const err = document.getElementById('spl-err');
+  if (input) { input.classList.add('err'); input.value = ''; setTimeout(() => input.classList.remove('err'), 500); }
+  if (err) { err.textContent = '❌ Mot de passe incorrect — réessayez'; setTimeout(() => { err.textContent = ''; }, 2500); }
+  const card = document.querySelector('.spl-card');
+  if (card) { card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'errShake .4s ease'; setTimeout(() => { card.style.animation = ''; }, 400); }
+}
+</script>
+</body>
+</html>
